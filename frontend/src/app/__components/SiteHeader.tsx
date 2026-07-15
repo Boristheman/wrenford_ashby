@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import WindowsDensityController from "./WindowsDensityController";
 
 type DropdownMenu = {
   label: string;
@@ -48,8 +47,14 @@ const dropdownMenus: DropdownMenu[] = [
         label: "Current developments",
         href: "/new-homes#current-developments",
       },
-      { label: "Upcoming releases", href: "/new-homes#upcoming-releases" },
-      { label: "Buying a new-build", href: "/new-homes#buying-new-build" },
+      {
+        label: "Upcoming releases",
+        href: "/new-homes#upcoming-releases",
+      },
+      {
+        label: "Buying a new-build",
+        href: "/new-homes#buying-new-build",
+      },
     ],
   },
   {
@@ -58,8 +63,14 @@ const dropdownMenus: DropdownMenu[] = [
     links: [
       { label: "Fully managed", href: "/landlords#managed" },
       { label: "Let only", href: "/landlords#let-only" },
-      { label: "Rental valuation", href: "/landlords#rental-valuation" },
-      { label: "Landlord enquiry", href: "/landlords#landlord-enquiry" },
+      {
+        label: "Rental valuation",
+        href: "/landlords#rental-valuation",
+      },
+      {
+        label: "Landlord enquiry",
+        href: "/landlords#landlord-enquiry",
+      },
     ],
   },
 ];
@@ -87,7 +98,9 @@ function NavReel({
       <span className="sr-only">{label}</span>
       <span aria-hidden="true" className="block h-7 overflow-hidden">
         <span
-          className={`block transition-transform duration-[560ms] ease-[cubic-bezier(.16,1,.3,1)] will-change-transform group-hover:-translate-y-7 group-focus-visible:-translate-y-7 ${active ? "-translate-y-7" : "translate-y-0"}`}
+          className={`block transition-transform duration-[560ms] ease-[cubic-bezier(.16,1,.3,1)] will-change-transform group-hover:-translate-y-7 group-focus-visible:-translate-y-7 ${
+            active ? "-translate-y-7" : "translate-y-0"
+          }`}
         >
           <span className="block h-7 whitespace-nowrap leading-7">{label}</span>
           <span className="block h-7 whitespace-nowrap leading-7 text-[#6B908D]">
@@ -103,13 +116,19 @@ function MenuIcon({ open }: { open: boolean }) {
   return (
     <span className="relative block h-4 w-7">
       <span
-        className={`absolute left-0 top-0 h-0.5 w-7 bg-current transition ${open ? "translate-y-[7px] rotate-45" : ""}`}
+        className={`absolute left-0 top-0 h-0.5 w-7 bg-current transition ${
+          open ? "translate-y-[7px] rotate-45" : ""
+        }`}
       />
       <span
-        className={`absolute left-0 top-[7px] h-0.5 w-7 bg-current transition ${open ? "opacity-0" : ""}`}
+        className={`absolute left-0 top-[7px] h-0.5 w-7 bg-current transition ${
+          open ? "opacity-0" : ""
+        }`}
       />
       <span
-        className={`absolute bottom-0 left-0 h-0.5 w-7 bg-current transition ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
+        className={`absolute bottom-0 left-0 h-0.5 w-7 bg-current transition ${
+          open ? "-translate-y-[7px] -rotate-45" : ""
+        }`}
       />
     </span>
   );
@@ -140,15 +159,14 @@ export function SiteHeader() {
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
+
     return () => {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
 
   return (
-    <>
-      <WindowsDensityController />
-      <header
+    <header
       onMouseLeave={() => setActiveMegaMenu(null)}
       className="sticky top-0 z-[80] bg-white text-[#17383C] shadow-[0_12px_35px_rgba(13,37,41,0.12)]"
     >
@@ -184,6 +202,7 @@ export function SiteHeader() {
 
           {dropdownMenus.map((menu) => {
             const open = activeMegaMenu === menu.label;
+
             return (
               <div
                 key={menu.label}
@@ -198,6 +217,7 @@ export function SiteHeader() {
                 >
                   <NavReel label={menu.label} active={open} />
                 </a>
+
                 {open && (
                   <div
                     onMouseEnter={() => setActiveMegaMenu(menu.label)}
@@ -207,13 +227,15 @@ export function SiteHeader() {
                       aria-hidden="true"
                       className="pointer-events-none absolute -left-px -right-px top-0 h-[7px] bg-[#17383C]"
                     />
+
                     <svg
                       aria-hidden="true"
                       viewBox="0 0 28 15"
-                      className="pointer-events-none absolute left-1/2 top-[-15px] z-10 h-[15px] w-7 -translate-x-1/2"
+                      className="pointer-events-none absolute left-1/2 top-[-14px] z-10 h-[15px] w-7 -translate-x-1/2"
                     >
                       <path d="M0 15 14 0 28 15Z" fill="#17383C" />
                     </svg>
+
                     {menu.links.map((link) => (
                       <a
                         key={link.label}
@@ -239,6 +261,7 @@ export function SiteHeader() {
           >
             <NavReel label="About" />
           </a>
+
           <a
             href="/news"
             onMouseEnter={() => setActiveMegaMenu(null)}
@@ -286,6 +309,7 @@ export function SiteHeader() {
                 <SmallChevron />
               </a>
             ))}
+
             <a
               href="/contact"
               onClick={() => setMenuOpen(false)}
@@ -296,8 +320,7 @@ export function SiteHeader() {
           </nav>
         </div>
       )}
-      </header>
-    </>
+    </header>
   );
 }
 

@@ -10,6 +10,7 @@ import {
 import SiteFooter from "./__components/SiteFooter";
 import WindowsDensityController from "./__components/WindowsDensityController";
 import { useEnquiryForm } from "./__components/useEnquiryForm";
+import MobileSite from "./__components/MobileSite";
 
 type SearchMode = "buy" | "rent";
 
@@ -786,7 +787,7 @@ function ReviewCard({ review }: { review: ClientReview }) {
   );
 }
 
-export default function Home() {
+function DesktopHome() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [heroReady, setHeroReady] = useState(false);
   const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
@@ -2192,4 +2193,31 @@ export default function Home() {
 
     </main>
   );
+}
+
+export default function Home() {
+  const [viewport, setViewport] = useState<
+    "checking" | "mobile" | "desktop"
+  >("checking");
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+
+    const updateViewport = () => {
+      setViewport(mediaQuery.matches ? "mobile" : "desktop");
+    };
+
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateViewport);
+    };
+  }, []);
+
+  if (viewport === "checking") {
+    return <div className="min-h-[100svh] bg-[#0D2529]" />;
+  }
+
+  return viewport === "mobile" ? <MobileSite /> : <DesktopHome />;
 }

@@ -203,12 +203,29 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
   >(null);
   const [favourites, setFavourites] = useState<Set<number>>(new Set());
   const [viewingProperty, setViewingProperty] = useState("");
+  const [cardsVisible, setCardsVisible] = useState(false);
   const alertsForm = useEnquiryForm("property-alerts");
   const viewingForm = useEnquiryForm("property-viewing", {
     onSuccess: () => setViewingProperty(""),
   });
 
   const isBuy = mode === "buy";
+
+  useEffect(() => {
+    setCardsVisible(false);
+
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        setCardsVisible(true);
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
+  }, [mode]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -469,15 +486,37 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
                 : "space-y-6"
             }
           >
-            {filteredProperties.map((property) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                favourite={favourites.has(property.id)}
-                onToggleFavourite={() => toggleFavourite(property.id)}
-                view={view}
-              />
-            ))}
+            {filteredProperties.map((property, index) => {
+              const startX = index % 2 === 0 ? -18 : 18;
+
+              return (
+                <div
+                  key={`${mode}-${property.id}`}
+                  style={{
+                    opacity: cardsVisible ? 1 : 0,
+                    transform: cardsVisible
+                      ? "translate3d(0, 0, 0) scale(1)"
+                      : `translate3d(${startX}px, 42px, 0) scale(0.965)`,
+                    filter: cardsVisible ? "blur(0px)" : "blur(8px)",
+                    transitionProperty: "opacity, transform, filter",
+                    transitionDuration: "760ms, 900ms, 760ms",
+                    transitionTimingFunction:
+                      "cubic-bezier(0.22, 1, 0.36, 1)",
+                    transitionDelay: cardsVisible
+                      ? `${110 + Math.min(index, 18) * 90}ms`
+                      : "0ms",
+                    willChange: "opacity, transform, filter",
+                  }}
+                >
+                  <PropertyCard
+                    property={property}
+                    favourite={favourites.has(property.id)}
+                    onToggleFavourite={() => toggleFavourite(property.id)}
+                    view={view}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           {filteredProperties.length === 0 && (
