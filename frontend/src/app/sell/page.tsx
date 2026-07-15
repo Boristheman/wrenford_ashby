@@ -305,7 +305,7 @@ export default function SellPage() {
               <article
                 key={fee.title}
                 className="sell-enter flex min-h-[210px] flex-col justify-between bg-white p-6 text-[#17383C] sm:p-7"
-                style={{ "--sell-delay": `${180 + index * 90}ms` }}
+                style={{ "--sell-delay": `${180 + index * 90}ms` } as React.CSSProperties}
               >
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.13em] text-[#6B908D]">
@@ -325,7 +325,7 @@ export default function SellPage() {
 
           <div
             className="sell-enter mt-8 flex flex-col gap-3 sm:flex-row"
-            style={{ "--sell-delay": "480ms" }}
+            style={{ "--sell-delay": "480ms" } as React.CSSProperties}
           >
             <a
               href="#book-valuation"
@@ -364,7 +364,7 @@ export default function SellPage() {
               <article
                 key={stat.value}
                 className="sell-enter"
-                style={{ "--sell-delay": `${180 + index * 85}ms` }}
+                style={{ "--sell-delay": `${180 + index * 85}ms` } as React.CSSProperties}
               >
                 <div className="mb-7 h-px w-28 border-t border-dashed border-[#C49A43]" />
                 <p className="text-[clamp(3.5rem,7vw,7.4rem)] font-black leading-none tracking-[-0.065em] text-[#0F4657]">
