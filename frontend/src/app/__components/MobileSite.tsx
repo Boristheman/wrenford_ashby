@@ -178,7 +178,7 @@ export default function MobileSite() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
+    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-[#17383C] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
       <MobileHeader
         menuOpen={menuOpen}
         scrolled={scrolled}
@@ -195,7 +195,13 @@ export default function MobileSite() {
       <style jsx global>{`
         html,
         body {
+          min-height: 100%;
           overflow-x: hidden;
+          background-color: #17383c;
+        }
+
+        body {
+          min-height: 100dvh;
         }
 
         @keyframes waMobileHeroIn {
