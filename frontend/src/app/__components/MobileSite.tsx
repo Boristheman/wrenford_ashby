@@ -166,76 +166,16 @@ export default function MobileSite() {
 
     const previousRootBackground = root.style.backgroundColor;
     const previousBodyBackground = body.style.backgroundColor;
-    const previousRootColorScheme = root.style.colorScheme;
-    const previousBodyColorScheme = body.style.colorScheme;
 
-    root.style.setProperty("background-color", green, "important");
-    body.style.setProperty("background-color", green, "important");
-    root.style.setProperty("color-scheme", "light", "important");
-    body.style.setProperty("color-scheme", "light", "important");
-
-    const existingThemeMetas = Array.from(
-      document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
-    );
-    const previousThemeValues = existingThemeMetas.map((meta) => ({
-      meta,
-      content: meta.content,
-    }));
-
-    existingThemeMetas.forEach((meta) => {
-      meta.content = green;
-    });
-
-    const mobileThemeMeta = document.createElement("meta");
-    mobileThemeMeta.name = "theme-color";
-    mobileThemeMeta.content = green;
-    mobileThemeMeta.setAttribute("data-wa-mobile-theme", "true");
-    document.head.appendChild(mobileThemeMeta);
-
-    let statusBarMeta = document.querySelector<HTMLMetaElement>(
-      'meta[name="apple-mobile-web-app-status-bar-style"]',
-    );
-    const createdStatusBarMeta = !statusBarMeta;
-    const previousStatusBarStyle = statusBarMeta?.content ?? "";
-
-    if (!statusBarMeta) {
-      statusBarMeta = document.createElement("meta");
-      statusBarMeta.name = "apple-mobile-web-app-status-bar-style";
-      document.head.appendChild(statusBarMeta);
-    }
-
-    statusBarMeta.content = "black-translucent";
-
-    const keepThemeGreen = new MutationObserver(() => {
-      document
-        .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
-        .forEach((meta) => {
-          meta.content = green;
-        });
-    });
-
-    keepThemeGreen.observe(document.head, {
-      childList: true,
-      subtree: true,
-    });
+    // Only colour the hidden page behind the fixed mobile interface. This
+    // keeps exposed iOS overscroll/safe-area space Wrenford green without
+    // forcing Safari's toolbar or status bar to remain green.
+    root.style.backgroundColor = green;
+    body.style.backgroundColor = green;
 
     return () => {
-      keepThemeGreen.disconnect();
       root.style.backgroundColor = previousRootBackground;
       body.style.backgroundColor = previousBodyBackground;
-      root.style.colorScheme = previousRootColorScheme;
-      body.style.colorScheme = previousBodyColorScheme;
-      mobileThemeMeta.remove();
-
-      previousThemeValues.forEach(({ meta, content }) => {
-        meta.content = content;
-      });
-
-      if (createdStatusBarMeta) {
-        statusBarMeta?.remove();
-      } else if (statusBarMeta) {
-        statusBarMeta.content = previousStatusBarStyle;
-      }
     };
   }, []);
 
@@ -364,16 +304,16 @@ function MobileHeader({
           : "bg-gradient-to-b from-black/48 via-black/18 to-transparent text-white"
       }`}
     >
-      <div className="grid h-[4.85rem] grid-cols-[1fr_auto_auto] items-center gap-3 px-4">
+      <div className="grid h-[5.1rem] grid-cols-[1fr_auto_auto] items-center gap-3 px-4">
         <a href="/" aria-label="Wrenford Ashby home" className="min-w-0">
           <img
             src="/graphics/logos/wa.png"
             alt="Wrenford Ashby"
             draggable={false}
-            className={`w-auto max-w-[15.5rem] origin-left object-contain object-left transition-all duration-300 ${
+            className={`-ml-1 w-auto max-w-[17rem] origin-left object-contain object-left transition-all duration-300 ${
               scrolled
-                ? "h-[4rem] scale-[1.18]"
-                : "h-[4.35rem] scale-[1.3] drop-shadow-[0_3px_12px_rgba(0,0,0,0.28)]"
+                ? "h-[4.25rem] scale-[1.25]"
+                : "h-[4.7rem] scale-[1.44] drop-shadow-[0_3px_12px_rgba(0,0,0,0.28)]"
             }`}
           />
         </a>
@@ -620,9 +560,7 @@ function MobileHome() {
               </span>
             </div>
 
-            <div className="my-3 h-px w-full bg-white/22" />
-
-            <div className="flex min-h-10 flex-wrap items-center gap-x-3 gap-y-2">
+            <div className="mt-2 flex min-h-10 flex-wrap items-center gap-x-3 gap-y-2">
               <img
                 src="/graphics/logos/google.png"
                 alt="Google"
@@ -943,9 +881,11 @@ function MobileHome() {
         </div>
       </section>
 
-      <MobileFooter />
+      <MobileFooter
+        onOpenCookiePreferences={() => setCookieNoticeOpen(true)}
+      />
 
-      {cookieNoticeOpen ? (
+      {cookieNoticeOpen && (
         <aside className="fixed bottom-4 left-4 right-4 z-[1050] border border-[#17383C]/14 bg-white p-4 shadow-[0_20px_60px_rgba(13,37,41,0.24)]">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -983,15 +923,6 @@ function MobileHome() {
             </button>
           </div>
         </aside>
-      ) : (
-        <button
-          type="button"
-          aria-label="Open cookie preferences"
-          onClick={() => setCookieNoticeOpen(true)}
-          className="fixed bottom-4 right-4 z-[1050] flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-[#17383C] text-[#BFD3CD] shadow-[0_10px_28px_rgba(13,37,41,0.28)]"
-        >
-          <CookieIcon />
-        </button>
       )}
     </main>
   );
@@ -1161,7 +1092,11 @@ function MobileReveal({ children }: { children: ReactNode }) {
   );
 }
 
-function MobileFooter() {
+function MobileFooter({
+  onOpenCookiePreferences,
+}: {
+  onOpenCookiePreferences: () => void;
+}) {
   return (
     <footer className="bg-[#0D2529] px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-9 text-white">
       <div className="mx-auto max-w-[34rem]">
@@ -1205,9 +1140,17 @@ function MobileFooter() {
           </a>
         </div>
 
-        <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/12 pt-5 text-xs font-bold text-white/42">
+        <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/12 pt-5 text-xs font-bold text-white/42">
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms & conditions</a>
+          <button
+            type="button"
+            onClick={onOpenCookiePreferences}
+            className="inline-flex items-center gap-1.5 text-left transition hover:text-white"
+          >
+            <CookieIcon className="h-3.5 w-3.5" />
+            Cookie settings
+          </button>
           <span>© 2026 Wrenford Ashby</span>
         </div>
       </div>
@@ -1278,9 +1221,18 @@ function MailIcon({ className = "h-4 w-4" }: { className?: string }) {
   );
 }
 
-function CookieIcon() {
+function CookieIcon({
+  className = "h-7 w-7",
+}: {
+  className?: string;
+}) {
   return (
-    <svg viewBox="0 0 48 48" aria-hidden="true" className="h-7 w-7" fill="none">
+    <svg
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+    >
       <path
         d="M39 23.5A15.5 15.5 0 1 1 24.5 9c.4 4.6 4.1 8.3 8.7 8.7.2 3.1 2.7 5.6 5.8 5.8Z"
         fill="currentColor"
