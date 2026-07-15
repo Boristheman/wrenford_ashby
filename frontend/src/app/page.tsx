@@ -7,6 +7,9 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
+import SiteFooter from "./__components/SiteFooter";
+import WindowsDensityController from "./__components/WindowsDensityController";
+import { useEnquiryForm } from "./__components/useEnquiryForm";
 
 type SearchMode = "buy" | "rent";
 
@@ -379,16 +382,16 @@ const dropdownMenus: DropdownMenu[] = [
         href: "/buy#properties-for-sale",
       },
       {
-        label: "New to the market",
-        href: "/buy#new-to-market",
+        label: "New to market",
+        href: "/buy?sort=new",
       },
       {
-        label: "Register for alerts",
-        href: "/buy#register-alerts",
+        label: "Property alerts",
+        href: "/buy?focus=alerts",
       },
       {
         label: "Book a viewing",
-        href: "/buy#book-viewing",
+        href: "/buy?focus=viewing",
       },
     ],
   },
@@ -401,16 +404,16 @@ const dropdownMenus: DropdownMenu[] = [
         href: "/rent#homes-to-rent",
       },
       {
-        label: "Register for rental alerts",
-        href: "/rent#rental-alerts",
+        label: "New to market",
+        href: "/rent?sort=new",
       },
       {
-        label: "Tenant information",
-        href: "/rent#tenant-information",
+        label: "Rental alerts",
+        href: "/rent?focus=alerts",
       },
       {
-        label: "Report a repair",
-        href: "/rent#report-repair",
+        label: "Book a viewing",
+        href: "/rent?focus=viewing",
       },
     ],
   },
@@ -419,19 +422,19 @@ const dropdownMenus: DropdownMenu[] = [
     href: "/sell",
     links: [
       {
+        label: "Selling fees",
+        href: "/sell#selling-fees",
+      },
+      {
+        label: "Why choose us",
+        href: "/sell#why-choose-us",
+      },
+      {
         label: "Book a valuation",
         href: "/sell#book-valuation",
       },
       {
-        label: "Selling your home",
-        href: "/sell#selling-your-home",
-      },
-      {
-        label: "Marketing your property",
-        href: "/sell#property-marketing",
-      },
-      {
-        label: "Sales progression",
+        label: "Selling process",
         href: "/sell#sales-progression",
       },
     ],
@@ -452,10 +455,6 @@ const dropdownMenus: DropdownMenu[] = [
         label: "Buying a new-build",
         href: "/new-homes#buying-new-build",
       },
-      {
-        label: "Developer services",
-        href: "/new-homes#developer-services",
-      },
     ],
   },
   {
@@ -463,20 +462,20 @@ const dropdownMenus: DropdownMenu[] = [
     href: "/landlords",
     links: [
       {
+        label: "Fully managed",
+        href: "/landlords#managed",
+      },
+      {
+        label: "Let only",
+        href: "/landlords#let-only",
+      },
+      {
         label: "Rental valuation",
         href: "/landlords#rental-valuation",
       },
       {
-        label: "Tenant-find service",
-        href: "/landlords#tenant-find",
-      },
-      {
-        label: "Fully managed service",
-        href: "/landlords#fully-managed",
-      },
-      {
-        label: "Switching agent",
-        href: "/landlords#switching-agent",
+        label: "Landlord enquiry",
+        href: "/landlords#landlord-enquiry",
       },
     ],
   },
@@ -500,6 +499,47 @@ const areas = [
   "Pitsea",
   "South Woodham Ferrers",
 ];
+
+const clientReviews = [
+  {
+    quote:
+      "They knew the area, kept us updated and made the whole move feel straightforward from start to finish.",
+    name: "Sarah",
+    detail: "Wickford homeowner",
+  },
+  {
+    quote:
+      "The valuation was realistic, the communication was clear and we always knew what was happening next.",
+    name: "Daniel",
+    detail: "Rayleigh landlord",
+  },
+  {
+    quote:
+      "We never felt pressured. The team answered every question and helped us move at the right pace.",
+    name: "Priya",
+    detail: "Billericay buyer",
+  },
+  {
+    quote:
+      "Viewings were organised properly and the feedback was useful rather than vague.",
+    name: "Martin",
+    detail: "Basildon seller",
+  },
+  {
+    quote:
+      "The team found a suitable tenant quickly and kept the whole handover clear.",
+    name: "Helen",
+    detail: "South Woodham Ferrers landlord",
+  },
+  {
+    quote:
+      "We always had a named person to call, even once the sale moved into the chain.",
+    name: "James",
+    detail: "Rayleigh homeowner",
+  },
+];
+
+type ClientReview = (typeof clientReviews)[number];
 
 function ArrowIcon({ className = "h-4 w-4" }: { className?: string }) {
   return (
@@ -530,6 +570,31 @@ function PhoneIcon({ className = "h-4 w-4" }: { className?: string }) {
     >
       <path
         d="M8.2 3.8 10 8.2 7.8 9.6a14 14 0 0 0 6.6 6.6l1.4-2.2 4.4 1.8v3a2 2 0 0 1-2 2C9.9 20.8 3.2 14.1 3.2 5.8a2 2 0 0 1 2-2h3Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function MailIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M3.5 6.5h17v11h-17v-11Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m4.5 7.5 7.5 6 7.5-6"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
@@ -691,6 +756,36 @@ function PropertyRailCard({
   );
 }
 
+function ReviewCard({ review }: { review: ClientReview }) {
+  return (
+    <article className="flex h-[248px] flex-col justify-between overflow-hidden border border-[#17383C]/10 bg-white p-5 shadow-[0_12px_30px_rgba(23,56,60,0.065)] sm:p-6">
+      <div>
+        <div className="flex items-start justify-between gap-4">
+          <div className="text-4xl font-black leading-none text-[#BFD3CD]">
+            “
+          </div>
+
+          <div className="flex items-center gap-1">
+            {[0, 1, 2, 3, 4].map((star) => (
+              <span key={star} className="text-sm text-[#00B67A]">
+                ★
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <blockquote className="mt-3 text-[clamp(1rem,1.15vw,1.18rem)] font-black leading-[1.24] tracking-[-0.025em] text-[#17383C]">
+          {review.quote}
+        </blockquote>
+      </div>
+
+      <div className="mt-4 border-t border-[#17383C]/10 pt-3">
+        <p className="text-base font-black text-[#17383C]">{review.name}</p>
+      </div>
+    </article>
+  );
+}
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [heroReady, setHeroReady] = useState(false);
@@ -709,9 +804,9 @@ export default function Home() {
   });
   const [favourites, setFavourites] = useState<Set<number>>(new Set());
   const [propertyShowcaseVisible, setPropertyShowcaseVisible] = useState(false);
+  const [valuationVisible, setValuationVisible] = useState(false);
   const [testimonialVisible, setTestimonialVisible] = useState(false);
-  const [valuationSent, setValuationSent] = useState(false);
-  const [newsletterSent, setNewsletterSent] = useState(false);
+  const valuationForm = useEnquiryForm("home-valuation");
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -768,6 +863,34 @@ export default function Home() {
     };
   }, []);
 
+
+  useEffect(() => {
+    const valuation = document.getElementById("valuation");
+
+    if (!valuation) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setValuationVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold: 0.18,
+        rootMargin: "0px 0px -8% 0px",
+      },
+    );
+
+    observer.observe(valuation);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     const testimonial = document.getElementById("testimonial");
 
@@ -794,6 +917,7 @@ export default function Home() {
       observer.disconnect();
     };
   }, []);
+
 
   useEffect(() => {
     if (window.location.hash === "#top") {
@@ -917,6 +1041,7 @@ export default function Home() {
       id="top"
       className="min-h-screen overflow-x-hidden bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]"
     >
+      <WindowsDensityController />
       <style>{`
         @keyframes wa-property-rail-left {
           from {
@@ -948,8 +1073,95 @@ export default function Home() {
           animation-play-state: paused;
         }
 
+        .wa-valuation-reveal {
+          opacity: 0;
+          transform: translate3d(0, 22px, 0);
+          transition:
+            opacity 720ms cubic-bezier(.22,1,.36,1),
+            transform 720ms cubic-bezier(.22,1,.36,1);
+        }
+
+        .wa-valuation-reveal-right {
+          opacity: 0;
+          transform: translate3d(28px, 0, 0);
+          transition:
+            opacity 820ms cubic-bezier(.22,1,.36,1),
+            transform 820ms cubic-bezier(.22,1,.36,1);
+        }
+
+        .wa-valuation-visible .wa-valuation-reveal,
+        .wa-valuation-visible .wa-valuation-reveal-right {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        .wa-valuation-form-grid > * {
+          opacity: 0;
+          transform: translate3d(0, 16px, 0);
+          transition:
+            opacity 560ms cubic-bezier(.22,1,.36,1),
+            transform 560ms cubic-bezier(.22,1,.36,1);
+        }
+
+        .wa-valuation-visible .wa-valuation-form-grid > * {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        .wa-valuation-visible .wa-valuation-form-grid > *:nth-child(1) {
+          transition-delay: 360ms;
+        }
+
+        .wa-valuation-visible .wa-valuation-form-grid > *:nth-child(2) {
+          transition-delay: 430ms;
+        }
+
+        .wa-valuation-visible .wa-valuation-form-grid > *:nth-child(3) {
+          transition-delay: 500ms;
+        }
+
+        .wa-valuation-visible .wa-valuation-form-grid > *:nth-child(4) {
+          transition-delay: 570ms;
+        }
+
+        .wa-valuation-visible .wa-valuation-form-grid > *:nth-child(5) {
+          transition-delay: 640ms;
+        }
+
+        @keyframes wa-review-conveyor {
+          from {
+            transform: translate3d(0, 0, 0);
+          }
+          to {
+            transform: translate3d(-50%, 0, 0);
+          }
+        }
+
+        .wa-review-conveyor-track {
+          animation: wa-review-conveyor 64s linear infinite;
+          will-change: transform;
+        }
+
+        .wa-review-conveyor:hover .wa-review-conveyor-track {
+          animation-play-state: paused;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .wa-property-track {
+            animation: none !important;
+            transform: none !important;
+          }
+
+          .wa-valuation-reveal,
+          .wa-valuation-reveal-right,
+          .wa-valuation-form-grid > * {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+            animation: none !important;
+          }
+
+          .wa-review-conveyor-track {
             animation: none !important;
             transform: none !important;
           }
@@ -976,7 +1188,7 @@ export default function Home() {
 
       <header
         onMouseLeave={() => setActiveMegaMenu(null)}
-        className={`fixed left-0 right-0 top-0 z-[80] border-b border-[#17383C]/10 bg-white text-[#17383C] shadow-[0_12px_35px_rgba(13,37,41,0.12)] backdrop-blur-md will-change-transform transition-[transform,opacity] duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
+        className={`fixed left-0 right-0 top-0 z-[80] bg-white text-[#17383C] shadow-[0_12px_35px_rgba(13,37,41,0.12)] backdrop-blur-md will-change-transform transition-[transform,opacity] duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
           headerVisible || menuOpen
             ? "pointer-events-auto translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-full opacity-0"
@@ -1033,17 +1245,43 @@ export default function Home() {
                   {active && (
                     <div
                       onMouseEnter={() => setActiveMegaMenu(menu.label)}
-                      className="absolute left-1/2 top-[calc(100%-1px)] z-[100] w-64 -translate-x-1/2 border border-[#17383C]/10 bg-white p-2 text-[#17383C] shadow-[0_16px_38px_rgba(13,37,41,0.14)]"
+                      className="absolute left-1/2 top-full z-[100] w-64 -translate-x-1/2 border-x border-b border-[#17383C]/10 bg-white pt-[7px] text-[#17383C] shadow-[0_16px_38px_rgba(13,37,41,0.14)]"
                     >
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute -left-px -right-px top-0 h-[7px] bg-[#17383C]"
+                      />
+
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 28 15"
+                        className="pointer-events-none absolute left-1/2 top-[-15px] z-10 h-[15px] w-7 -translate-x-1/2"
+                      >
+                        <path d="M0 15 14 0 28 15Z" fill="#17383C" />
+                      </svg>
+
                       {menu.links.map((link) => (
                         <a
                           key={link.label}
                           href={link.href}
                           style={{ color: "#17383C" }}
-                          className="group flex min-h-11 items-center justify-between gap-4 px-3 py-2 text-sm font-bold !text-[#17383C] transition hover:bg-[#EAF0ED] hover:!text-[#17383C]"
+                          className="group flex min-h-14 w-full items-center justify-between gap-4 px-5 py-3 text-sm font-bold !text-[#17383C] transition hover:bg-[#EAF0ED] hover:!text-[#17383C]"
                         >
                           <span style={{ color: "#17383C" }}>{link.label}</span>
-                          <ArrowIcon className="h-3.5 w-3.5 shrink-0 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+                          <svg
+                            viewBox="0 0 10 16"
+                            fill="none"
+                            aria-hidden="true"
+                            className="h-3.5 w-2.5 shrink-0 text-[#17383C]/45 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-[#17383C]"
+                          >
+                            <path
+                              d="M2 2.5 7.5 8 2 13.5"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                         </a>
                       ))}
                     </div>
@@ -1222,16 +1460,42 @@ export default function Home() {
                       {active && (
                         <div
                           onMouseEnter={() => setActiveMegaMenu(menu.label)}
-                          className="absolute left-1/2 top-full w-64 -translate-x-1/2 border border-white/14 bg-white p-2 text-[#17383C] shadow-[0_20px_48px_rgba(0,0,0,0.24)]"
+                          className="absolute left-1/2 top-[calc(50%+31px)] w-64 -translate-x-1/2 border-x border-b border-white/14 bg-white pt-[7px] text-[#17383C] shadow-[0_20px_48px_rgba(0,0,0,0.24)]"
                         >
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -left-px -right-px top-0 h-[7px] bg-[#17383C]"
+                          />
+
+                          <svg
+                            aria-hidden="true"
+                            viewBox="0 0 28 15"
+                            className="pointer-events-none absolute left-1/2 top-[-15px] z-10 h-[15px] w-7 -translate-x-1/2"
+                          >
+                            <path d="M0 15 14 0 28 15Z" fill="#17383C" />
+                          </svg>
+
                           {menu.links.map((link) => (
                             <a
                               key={`hero-${link.label}`}
                               href={link.href}
-                              className="group flex min-h-11 items-center justify-between gap-4 px-3 py-2 text-sm font-bold text-[#17383C]/72 transition hover:bg-[#EAF0ED] hover:text-[#17383C]"
+                              className="group flex min-h-14 w-full items-center justify-between gap-4 px-5 py-3 text-sm font-bold text-[#17383C]/72 transition hover:bg-[#EAF0ED] hover:text-[#17383C]"
                             >
                               <span>{link.label}</span>
-                              <ArrowIcon className="h-3.5 w-3.5 shrink-0 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+                              <svg
+                            viewBox="0 0 10 16"
+                            fill="none"
+                            aria-hidden="true"
+                            className="h-3.5 w-2.5 shrink-0 text-[#17383C]/45 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-[#17383C]"
+                          >
+                            <path
+                              d="M2 2.5 7.5 8 2 13.5"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
                             </a>
                           ))}
                         </div>
@@ -1462,20 +1726,15 @@ export default function Home() {
               }`}
               style={{ transitionDelay: "120ms" }}
             >
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
-                  Buying
-                </p>
-                <h3 className="mt-1 text-2xl font-black tracking-[-0.03em] text-[#17383C] sm:text-3xl">
-                  Homes for sale
-                </h3>
-              </div>
+              <h3 className="text-2xl font-black tracking-[-0.03em] text-[#17383C] sm:text-3xl">
+                For sale
+              </h3>
 
               <a
-                href="/buy#properties-for-sale"
+                href="/buy"
                 className="group inline-flex items-center gap-2 text-sm font-black text-[#17383C] transition hover:text-[#6B908D]"
               >
-                See all homes for sale
+                See all homes to buy
                 <ArrowIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
             </div>
@@ -1533,17 +1792,12 @@ export default function Home() {
               }`}
               style={{ transitionDelay: "340ms" }}
             >
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
-                  Renting
-                </p>
-                <h3 className="mt-1 text-2xl font-black tracking-[-0.03em] text-[#17383C] sm:text-3xl">
-                  Homes to rent
-                </h3>
-              </div>
+              <h3 className="text-2xl font-black tracking-[-0.03em] text-[#17383C] sm:text-3xl">
+                To let
+              </h3>
 
               <a
-                href="/rent#homes-to-rent"
+                href="/rent"
                 className="group inline-flex items-center gap-2 text-sm font-black text-[#17383C] transition hover:text-[#6B908D]"
               >
                 See all homes to rent
@@ -1598,93 +1852,80 @@ export default function Home() {
 
         <div
           id="valuation"
-          className={`relative mx-auto mt-14 max-w-[1480px] scroll-mt-24 overflow-hidden bg-[#0D2529] text-white transition-all duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] sm:mt-16 ${
-            propertyShowcaseVisible
-              ? "translate-y-0 opacity-100"
-              : "translate-y-12 opacity-0"
+          className={`relative mx-auto mt-14 max-w-[1480px] scroll-mt-24 overflow-hidden bg-[#0D2529] text-white transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] sm:mt-16 ${
+            valuationVisible
+              ? "wa-valuation-visible translate-y-0 opacity-100"
+              : "translate-y-8 opacity-0"
           }`}
-          style={{ transitionDelay: "520ms" }}
         >
-          <div className="pointer-events-none absolute -right-20 -top-32 text-[22rem] font-black leading-none text-white/[0.025]">
-            24
-          </div>
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#17383C]/35 via-transparent to-[#6B908D]/12" />
+          <div className="relative grid gap-8 px-6 py-10 sm:px-10 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-start lg:gap-14 lg:px-14">
+            <div className="max-w-[670px] lg:pt-2">
+              <h2
+                className="wa-valuation-reveal max-w-[650px] text-[clamp(3rem,5.2vw,5.6rem)] font-black leading-[0.98] tracking-[-0.045em]"
+                style={{ transitionDelay: "80ms" }}
+              >
+                Request a valuation.
+              </h2>
 
-          <div className="relative grid gap-10 px-6 py-12 sm:px-10 sm:py-16 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14 lg:px-14 lg:py-16">
-            <div className="flex flex-col justify-between">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#BFD3CD]">
-                  Free local valuation
-                </p>
-                <h2 className="mt-4 max-w-xl text-[clamp(2.5rem,4.4vw,4.7rem)] font-black leading-[1] tracking-[-0.04em]">
-                  A realistic figure, without the sales routine.
-                </h2>
-                <p className="mt-6 max-w-lg text-base leading-7 text-white/66">
-                  Tell us a little about the property. A local member of the
-                  team will call to arrange a convenient valuation and explain
-                  what is genuinely happening in your area.
-                </p>
-              </div>
+              <p
+                className="wa-valuation-reveal mt-6 max-w-[610px] text-lg leading-8 text-white/62"
+                style={{ transitionDelay: "160ms" }}
+              >
+                Tell us the postcode and how to contact you. A local member of
+                the team will arrange a visit.
+              </p>
 
-              <div className="mt-9 grid gap-px border border-white/14 bg-white/14 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                {[
-                  ["Local evidence", "Recent nearby sales"],
-                  ["Clear advice", "No inflated instruction price"],
-                  ["Sales or lettings", "One straightforward visit"],
-                ].map(([title, text]) => (
-                  <div key={title} className="bg-[#0D2529]/82 p-4">
-                    <p className="text-sm font-black">{title}</p>
-                    <p className="mt-1 text-xs leading-5 text-white/48">{text}</p>
-                  </div>
-                ))}
+              <div
+                className="wa-valuation-reveal mt-10 max-w-[610px] border-t border-white/14 pt-6"
+                style={{ transitionDelay: "240ms" }}
+              >
+                <p className="text-sm font-bold text-white/58">
+                  Prefer to speak to someone?
+                </p>
+
+                <a
+                  href="tel:01268000000"
+                  className="mt-2 inline-flex items-center gap-3 text-xl font-black text-white transition hover:text-[#BFD3CD]"
+                >
+                  <PhoneIcon className="h-5 w-5 text-[#BFD3CD]" />
+                  01268 000 000
+                </a>
+
+                <p className="mt-2 text-xs text-white/38">
+                  Wickford office · Monday to Saturday
+                </p>
               </div>
             </div>
 
-            <div className="border border-white/14 bg-white/[0.055] p-5 backdrop-blur-sm sm:p-7 lg:p-8">
-              {valuationSent ? (
-                <div className="flex min-h-[430px] flex-col justify-center">
-                  <p className="text-xs font-black uppercase tracking-[0.15em] text-[#BFD3CD]">
-                    Request received
-                  </p>
-                  <h3 className="mt-4 max-w-xl text-4xl font-black leading-tight">
-                    Thanks. A member of the local team will call you.
+            <div
+              className="wa-valuation-reveal-right w-full max-w-[720px] justify-self-end border border-white/14 bg-white/[0.045] p-5 sm:p-7 lg:p-7"
+              style={{ transitionDelay: "170ms" }}
+            >
+              {valuationForm.status === "success" ? (
+                <div className="flex min-h-[310px] flex-col justify-center">
+                  <h3 className="text-3xl font-black leading-tight">
+                    Thanks — we’ll call you to arrange the valuation.
                   </h3>
-                  <p className="mt-5 max-w-lg leading-7 text-white/62">
-                    We will arrange a convenient time and keep the conversation
-                    straightforward.
-                  </p>
+
                   <button
                     type="button"
-                    onClick={() => setValuationSent(false)}
+                    onClick={valuationForm.reset}
                     className="mt-7 w-fit border-b border-white/40 pb-1 text-sm font-black transition hover:border-white"
                   >
                     Send another request
                   </button>
                 </div>
               ) : (
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    setValuationSent(true);
-                  }}
-                >
-                  <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-[0.14em] text-[#BFD3CD]">
-                        Start here
-                      </p>
-                      <h3 className="mt-2 text-3xl font-black">
-                        Request your valuation
-                      </h3>
-                    </div>
-                    <p className="text-xs leading-5 text-white/46">
-                      Usually takes less than a minute.
-                    </p>
-                  </div>
-
-                  <div className="mt-7 grid gap-4 sm:grid-cols-2">
+                <form onSubmit={valuationForm.handleSubmit}>
+                  <input
+                    type="hidden"
+                    name="botField"
+                    value=""
+                    readOnly
+                  />
+                  <div className="wa-valuation-form-grid grid gap-4 sm:grid-cols-2">
                     <label className="sm:col-span-2">
-                      <span className="text-xs font-black text-white/72">
+                      <span className="text-xs font-black text-white/70">
                         Property postcode
                       </span>
                       <input
@@ -1692,77 +1933,83 @@ export default function Home() {
                         name="postcode"
                         type="text"
                         placeholder="SS12 9AA"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white/[0.08] px-4 text-white outline-none placeholder:text-white/28 focus:border-[#BFD3CD]"
+                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none placeholder:text-[#17383C]/28 focus:border-[#BFD3CD]"
                       />
                     </label>
 
                     <label>
-                      <span className="text-xs font-black text-white/72">
+                      <span className="text-xs font-black text-white/70">
                         Full name
                       </span>
                       <input
                         required
                         name="name"
                         type="text"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white/[0.08] px-4 text-white outline-none focus:border-[#BFD3CD]"
+                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </label>
 
                     <label>
-                      <span className="text-xs font-black text-white/72">
+                      <span className="text-xs font-black text-white/70">
                         Telephone
                       </span>
                       <input
                         required
                         name="telephone"
                         type="tel"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white/[0.08] px-4 text-white outline-none focus:border-[#BFD3CD]"
+                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </label>
 
                     <label>
-                      <span className="text-xs font-black text-white/72">
+                      <span className="text-xs font-black text-white/70">
                         Email address
                       </span>
                       <input
                         required
                         name="email"
                         type="email"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white/[0.08] px-4 text-white outline-none focus:border-[#BFD3CD]"
+                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </label>
 
                     <label>
-                      <span className="text-xs font-black text-white/72">
+                      <span className="text-xs font-black text-white/70">
                         I am looking to
                       </span>
                       <select
                         required
                         name="valuationType"
                         defaultValue=""
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-[#17383C] px-4 text-white outline-none focus:border-[#BFD3CD]"
+                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       >
                         <option value="" disabled>
                           Select an option
                         </option>
                         <option>Sell a property</option>
                         <option>Let a property</option>
-                        <option>Just understand the value</option>
+                        <option>Understand the value</option>
                       </select>
                     </label>
                   </div>
 
                   <button
                     type="submit"
-                    className="mt-6 flex min-h-14 w-full items-center justify-center gap-3 bg-[#BFD3CD] px-6 py-4 font-black text-[#17383C] transition hover:bg-white"
+                    disabled={valuationForm.isSending}
+                    className="wa-valuation-reveal mt-5 flex min-h-13 w-full items-center justify-center gap-3 bg-[#BFD3CD] px-6 py-3.5 font-black text-[#17383C] transition hover:bg-white disabled:cursor-wait disabled:opacity-65"
+                    style={{ transitionDelay: "620ms" }}
                   >
-                    Request my valuation
+                    {valuationForm.isSending
+                      ? "Sending request..."
+                      : "Request valuation"}
                     <ArrowIcon />
                   </button>
 
-                  <p className="mt-4 text-xs leading-5 text-white/38">
-                    Your details will only be used to respond to this enquiry.
-                  </p>
+                  {valuationForm.status === "error" && (
+                    <p role="alert" className="mt-4 text-sm font-bold text-red-200">
+                      {valuationForm.message}
+                    </p>
+                  )}
                 </form>
               )}
             </div>
@@ -1772,25 +2019,19 @@ export default function Home() {
 
       <section
         id="testimonial"
-        className="bg-[#EAF0ED] px-5 py-10 sm:px-8 sm:py-12 lg:px-12"
+        className="overflow-hidden bg-[#EAF0ED] px-5 py-8 sm:px-8 sm:py-9 lg:px-12"
       >
-        <div className="mx-auto max-w-[1480px]">
-          <div
-            className={`flex flex-col gap-6 transition-all duration-800 ease-[cubic-bezier(.22,1,.36,1)] md:flex-row md:items-end md:justify-between ${
-              testimonialVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-7 opacity-0"
-            }`}
-          >
-            <div className="max-w-3xl">
-              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#6B908D]">
-                Local feedback
-              </p>
-
-              <h2 className="mt-3 text-[clamp(2.3rem,4vw,4.2rem)] font-black leading-[1.02] tracking-[-0.04em] text-[#17383C]">
-                What local clients say
-              </h2>
-            </div>
+        <div
+          className={`mx-auto max-w-[1480px] transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)] ${
+            testimonialVisible
+              ? "translate-y-0 opacity-100"
+              : "translate-y-6 opacity-0"
+          }`}
+        >
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <h2 className="text-[clamp(2rem,3.2vw,3.25rem)] font-black leading-[1.02] tracking-[-0.04em] text-[#17383C]">
+              What local clients say
+            </h2>
 
             <div className="flex items-center gap-3 text-sm font-bold text-[#17383C]/62">
               <div className="flex items-center gap-1">
@@ -1807,93 +2048,30 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-5 lg:grid-cols-3">
-            {[
-              {
-                quote:
-                  "They knew the area, kept us updated and made the whole move feel straightforward from start to finish.",
-                name: "Sarah",
-                detail: "Wickford homeowner",
-              },
-              {
-                quote:
-                  "The valuation was realistic, the communication was clear and we always knew what was happening next.",
-                name: "Daniel",
-                detail: "Rayleigh landlord",
-              },
-              {
-                quote:
-                  "We never felt pressured. The team answered every question and helped us move at the right pace.",
-                name: "Priya",
-                detail: "Billericay buyer",
-              },
-            ].map((review, index) => (
-              <article
-                key={review.name}
-                className={`flex min-h-[290px] flex-col justify-between border border-[#17383C]/10 bg-white p-6 shadow-[0_12px_36px_rgba(23,56,60,0.07)] transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)] sm:p-7 ${
-                  testimonialVisible
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-10 opacity-0"
-                }`}
-                style={{ transitionDelay: `${160 + index * 110}ms` }}
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="text-5xl font-black leading-none text-[#BFD3CD]">
-                      “
+          <div className="wa-review-conveyor relative mt-5 overflow-hidden pb-5">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-[#EAF0ED] to-transparent sm:w-20" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-[#EAF0ED] to-transparent sm:w-20" />
+
+            <div className="wa-review-conveyor-track flex w-max">
+              {[0, 1].map((copy) => (
+                <div
+                  key={`review-copy-${copy}`}
+                  aria-hidden={copy === 1}
+                  className="flex shrink-0 gap-4 pr-4"
+                >
+                  {clientReviews.map((review) => (
+                    <div
+                      key={`${copy}-${review.name}`}
+                      className="w-[300px] shrink-0 sm:w-[340px] lg:w-[360px]"
+                    >
+                      <ReviewCard review={review} />
                     </div>
-
-                    <div className="flex items-center gap-1">
-                      {[0, 1, 2, 3, 4].map((star) => (
-                        <span
-                          key={star}
-                          className="text-sm text-[#00B67A]"
-                        >
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <blockquote className="mt-4 text-[clamp(1.3rem,2vw,1.75rem)] font-black leading-[1.18] tracking-[-0.025em] text-[#17383C]">
-                    {review.quote}
-                  </blockquote>
+                  ))}
                 </div>
-
-                <div className="mt-6 border-t border-[#17383C]/10 pt-4">
-                  <p className="text-lg font-black text-[#17383C]">
-                    {review.name}
-                  </p>
-                  <p className="mt-1 text-sm text-[#17383C]/52">
-                    {review.detail}
-                  </p>
-                </div>
-              </article>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div
-            className={`mt-5 flex flex-col gap-4 transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)] sm:flex-row sm:items-center sm:justify-between ${
-              testimonialVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-6 opacity-0"
-            }`}
-            style={{ transitionDelay: "520ms" }}
-          >
-            <p className="max-w-2xl text-sm leading-6 text-[#17383C]/58">
-              Read more feedback or speak to the team about selling, buying,
-              letting or renting locally.
-            </p>
-
-            <a
-              href="#contact"
-              style={{ color: "#ffffff" }}
-              className="inline-flex min-h-12 w-fit items-center gap-3 bg-[#17383C] px-6 text-sm font-black !text-white visited:!text-white transition hover:bg-[#2D5B5D] hover:!text-white"
-            >
-              <span style={{ color: "#ffffff" }}>Speak to the local team</span>
-              <ArrowIcon />
-            </a>
-          </div>
         </div>
       </section>
 
@@ -1918,136 +2096,10 @@ export default function Home() {
         </div>
       </section>
 
-      <footer
-        id="contact"
-        className="scroll-mt-28 bg-[#0D2529] px-5 pb-7 pt-14 text-white sm:px-8 lg:px-12"
-      >
-        <div className="mx-auto max-w-[1480px]">
-          <div className="grid gap-10 border-b border-white/12 pb-12 md:grid-cols-2 lg:grid-cols-[1.2fr_0.7fr_0.7fr_1fr]">
-            <div>
-              <img
-                src="/graphics/logos/wa.png"
-                alt="Wrenford Ashby"
-                draggable={false}
-                className="h-24 w-auto max-w-[360px] object-contain brightness-0 invert sm:h-28"
-              />
-              <p className="mt-5 max-w-md text-sm leading-7 text-white/58">
-                Independent estate agents for Wickford, Rayleigh, Basildon,
-                Billericay and surrounding South Essex communities.
-              </p>
-            </div>
+      <div id="contact" className="scroll-mt-28">
+        <SiteFooter />
+      </div>
 
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#BFD3CD]">
-                Property
-              </p>
-              <nav className="mt-5 flex flex-col gap-3 text-sm text-white/62">
-                <a href="/buy#properties-for-sale" className="hover:text-white">
-                  For sale
-                </a>
-                <a href="/rent#homes-to-rent" className="hover:text-white">
-                  To let
-                </a>
-                <a href="/sell" className="hover:text-white">
-                  Sell your home
-                </a>
-                <a href="/landlords" className="hover:text-white">
-                  Landlords
-                </a>
-              </nav>
-            </div>
-
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#BFD3CD]">
-                Company
-              </p>
-              <nav className="mt-5 flex flex-col gap-3 text-sm text-white/62">
-                <a href="/about" className="hover:text-white">
-                  About us
-                </a>
-                <a href="#areas" className="hover:text-white">
-                  Areas we cover
-                </a>
-                <a href="#contact" className="hover:text-white">
-                  Contact
-                </a>
-                <a href="#contact" className="hover:text-white">
-                  Privacy
-                </a>
-              </nav>
-            </div>
-
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#BFD3CD]">
-                Wickford office
-              </p>
-              <address className="mt-5 not-italic text-sm leading-7 text-white/62">
-                High Street
-                <br />
-                Wickford, Essex
-                <br />
-                SS12
-              </address>
-              <div className="mt-4 flex flex-col gap-2 text-sm font-bold">
-                <a href="tel:01268000000" className="hover:text-[#BFD3CD]">
-                  01268 000 000
-                </a>
-                <a
-                  href="mailto:hello@wrenfordashby.co.uk"
-                  className="break-all hover:text-[#BFD3CD]"
-                >
-                  hello@wrenfordashby.co.uk
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid gap-7 border-b border-white/12 py-8 lg:grid-cols-[1fr_0.8fr] lg:items-center">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.15em] text-[#BFD3CD]">
-                Local property updates
-              </p>
-              <p className="mt-2 text-sm text-white/52">
-                New listings and useful local property advice. No daily spam.
-              </p>
-            </div>
-
-            {newsletterSent ? (
-              <p className="text-sm font-bold">Thanks — you are subscribed.</p>
-            ) : (
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  setNewsletterSent(true);
-                }}
-                className="flex border border-white/22"
-              >
-                <label htmlFor="newsletter-email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="newsletter-email"
-                  required
-                  type="email"
-                  placeholder="Your email address"
-                  className="min-h-12 min-w-0 flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-white/35"
-                />
-                <button
-                  type="submit"
-                  className="bg-[#BFD3CD] px-5 font-black text-[#17383C] transition hover:bg-white"
-                >
-                  Join
-                </button>
-              </form>
-            )}
-          </div>
-
-          <div className="flex flex-col justify-between gap-3 py-6 text-xs text-white/40 sm:flex-row">
-            <p>© 2026 Wrenford Ashby Estate Agents</p>
-            <p>Local sales and lettings across South Essex</p>
-          </div>
-        </div>
-      </footer>
       {cookieNoticeOpen ? (
         <aside
           aria-label="Cookie preferences"
