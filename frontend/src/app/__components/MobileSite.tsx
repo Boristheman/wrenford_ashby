@@ -364,24 +364,6 @@ function MobileHeader({
           : "bg-gradient-to-b from-black/48 via-black/18 to-transparent text-white"
       }`}
     >
-      <div
-        className={`overflow-hidden bg-[#17383C] text-white transition-[max-height,opacity] duration-300 ${
-          scrolled ? "max-h-0 opacity-0" : "max-h-9 opacity-100"
-        }`}
-      >
-        <div className="flex min-h-9 items-center justify-between gap-4 px-4 text-[10px] font-bold">
-          <span className="truncate text-white/72">
-            Independent estate agents for Wickford & South Essex
-          </span>
-          <a
-            href="tel:01268000000"
-            className="shrink-0 font-black text-white"
-          >
-            01268 000 000
-          </a>
-        </div>
-      </div>
-
       <div className="grid h-[4.85rem] grid-cols-[1fr_auto_auto] items-center gap-3 px-4">
         <a href="/" aria-label="Wrenford Ashby home" className="min-w-0">
           <img
@@ -583,7 +565,7 @@ function MobileHome() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#071C20]/68 via-[#071C20]/28 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[#071C20]/92 via-[#071C20]/46 to-transparent" />
 
-        <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-center px-4 pb-4 pt-[7.75rem]">
+        <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-center px-4 pb-4 pt-[5.65rem]">
           <p className="wa-mobile-hero-in text-[11px] font-black uppercase tracking-[0.18em] text-[#C9DDD7]">
             Estate agents for Wickford & South Essex
           </p>
