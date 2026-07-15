@@ -2,7 +2,6 @@
 
 import {
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
   type FormEvent,
@@ -157,28 +156,6 @@ const AREAS = [
 export default function MobileSite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const scrollPaneRef = useRef<HTMLDivElement | null>(null);
-
-  useLayoutEffect(() => {
-    const green = "#17383C";
-    const root = document.documentElement;
-    const body = document.body;
-
-    const previousRootBackground = root.style.backgroundColor;
-    const previousBodyBackground = body.style.backgroundColor;
-
-    // Only colour the hidden page behind the fixed mobile interface. This
-    // keeps exposed iOS overscroll/safe-area space Wrenford green without
-    // forcing Safari's toolbar or status bar to remain green.
-    root.style.backgroundColor = green;
-    body.style.backgroundColor = green;
-
-    return () => {
-      root.style.backgroundColor = previousRootBackground;
-      body.style.backgroundColor = previousBodyBackground;
-    };
-  }, []);
-
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
 
@@ -188,35 +165,27 @@ export default function MobileSite() {
   }, [menuOpen]);
 
   useEffect(() => {
-    const scrollPane = scrollPaneRef.current;
-    if (!scrollPane) return;
-
     const updateHeader = () => {
-      setScrolled(scrollPane.scrollTop > 56);
+      setScrolled(window.scrollY > 56);
     };
 
     updateHeader();
-    scrollPane.addEventListener("scroll", updateHeader, { passive: true });
+    window.addEventListener("scroll", updateHeader, { passive: true });
 
     return () => {
-      scrollPane.removeEventListener("scroll", updateHeader);
+      window.removeEventListener("scroll", updateHeader);
     };
   }, []);
 
   return (
-    <div className="fixed inset-0 h-[100svh] w-full max-w-[100vw] overflow-hidden bg-[#17383C] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
+    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
       <MobileHeader
         menuOpen={menuOpen}
         scrolled={scrolled}
         onOpen={() => setMenuOpen(true)}
       />
 
-      <div
-        ref={scrollPaneRef}
-        className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#17383C] [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden"
-      >
-        <MobileHome />
-      </div>
+      <MobileHome />
 
       <MobileDrawer
         open={menuOpen}
@@ -225,10 +194,8 @@ export default function MobileSite() {
 
       <style jsx global>{`
         html,
-        body,
-        #__next {
-          background: #17383c !important;
-          overscroll-behavior-x: none;
+        body {
+          overflow-x: hidden;
         }
 
         @keyframes waMobileHeroIn {
