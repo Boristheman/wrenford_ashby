@@ -42,12 +42,25 @@ const interiorImages = [
   "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1800&q=86",
 ];
 
-const rawProperties: Array<
-  Omit<
-    Property,
-    "summary" | "features" | "tenureLabel" | "councilTaxOrDeposit" | "epc"
-  >
-> = [
+type RawProperty = Pick<
+  Property,
+  | "id"
+  | "mode"
+  | "status"
+  | "badge"
+  | "location"
+  | "area"
+  | "postcode"
+  | "price"
+  | "priceLabel"
+  | "propertyType"
+  | "bedrooms"
+  | "bathrooms"
+  | "image"
+  | "listedDate"
+>;
+
+const rawProperties: RawProperty[] = [
   {
     id: 1,
     mode: "buy",
