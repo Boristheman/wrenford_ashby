@@ -1,5 +1,6 @@
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import CookiePreferences from "./CookiePreferences";
 
 export type MarketingPageCard = {
   eyebrow?: string;
@@ -311,6 +312,7 @@ export default function MarketingPage({
       })}
 
       <SiteFooter />
+      <CookiePreferences />
     </main>
   );
 }

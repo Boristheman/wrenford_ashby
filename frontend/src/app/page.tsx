@@ -791,7 +791,6 @@ function ReviewCard({ review }: { review: ClientReview }) {
 function DesktopHome() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [heroReady, setHeroReady] = useState(false);
-  const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const [searchMode, setSearchMode] = useState<SearchMode>("buy");
@@ -826,16 +825,6 @@ function DesktopHome() {
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, []);
-
-  useEffect(() => {
-    const savedPreference = window.localStorage.getItem(
-      "wrenford-ashby-cookie-preference",
-    );
-
-    if (savedPreference) {
-      setCookieNoticeOpen(false);
-    }
   }, []);
 
   useEffect(() => {
@@ -1026,16 +1015,6 @@ function DesktopHome() {
       else next.add(id);
       return next;
     });
-  };
-
-  const saveCookiePreference = (preference: "all" | "essential") => {
-    window.localStorage.setItem(
-      "wrenford-ashby-cookie-preference",
-      preference,
-    );
-
-    document.cookie = `wa_cookie_preference=${preference}; path=/; max-age=31536000; SameSite=Lax`;
-    setCookieNoticeOpen(false);
   };
 
   return (
@@ -2106,96 +2085,6 @@ function DesktopHome() {
         <SiteFooter />
       </div>
 
-      {cookieNoticeOpen ? (
-        <aside
-          aria-label="Cookie preferences"
-          className="fixed bottom-5 right-5 z-[90] w-[min(calc(100vw-2.5rem),380px)] border border-[#17383C]/14 bg-white p-5 shadow-[0_20px_60px_rgba(13,37,41,0.18)] sm:bottom-6 sm:right-6"
-        >
-          <div className="flex items-start justify-between gap-5">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.14em] text-[#6B908D]">
-                Cookie preferences
-              </p>
-
-              <h2 className="mt-2 text-xl font-black tracking-[-0.02em] text-[#17383C]">
-                A better browsing experience
-              </h2>
-            </div>
-
-            <button
-              type="button"
-              aria-label="Close cookie notice"
-              onClick={() => setCookieNoticeOpen(false)}
-              className="flex h-8 w-8 shrink-0 items-center justify-center text-xl leading-none text-[#17383C]/55 transition hover:text-[#17383C]"
-            >
-              ×
-            </button>
-          </div>
-
-          <p className="mt-3 text-sm leading-6 text-[#17383C]/62">
-            We use essential cookies to make the website work and optional
-            cookies to understand how it is used.
-          </p>
-
-          <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => saveCookiePreference("all")}
-              className="min-h-11 flex-1 bg-[#17383C] px-4 text-sm font-black text-white transition hover:bg-[#2D5B5D]"
-            >
-              Accept all
-            </button>
-
-            <button
-              type="button"
-              onClick={() => saveCookiePreference("essential")}
-              className="min-h-11 flex-1 border border-[#17383C]/24 bg-white px-4 text-sm font-black text-[#17383C] transition hover:border-[#17383C]"
-            >
-              Essential only
-            </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setCookieNoticeOpen(true)}
-            className="mt-3 text-xs font-bold text-[#17383C]/55 underline decoration-[#17383C]/30 underline-offset-4 transition hover:text-[#17383C]"
-          >
-            Manage preferences
-          </button>
-        </aside>
-      ) : (
-        <button
-          type="button"
-          aria-label="Open cookie preferences"
-          title="Cookie preferences"
-          onClick={() => setCookieNoticeOpen(true)}
-          className="group fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/80 bg-[#17383C] text-[#BFD3CD] shadow-[0_12px_34px_rgba(13,37,41,0.28)] transition duration-300 hover:-translate-y-1 hover:bg-[#2D5B5D] sm:bottom-6 sm:right-6"
-        >
-          <svg
-            viewBox="0 0 48 48"
-            aria-hidden="true"
-            className="h-8 w-8"
-            fill="none"
-          >
-            <path
-              d="M39 23.5A15.5 15.5 0 1 1 24.5 9c.4 4.6 4.1 8.3 8.7 8.7.2 3.1 2.7 5.6 5.8 5.8Z"
-              fill="currentColor"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinejoin="round"
-            />
-            <circle cx="19" cy="18" r="2.2" fill="#17383C" />
-            <circle cx="16" cy="28" r="2.4" fill="#17383C" />
-            <circle cx="27" cy="29" r="2.1" fill="#17383C" />
-            <circle cx="25" cy="20" r="1.8" fill="#17383C" />
-          </svg>
-
-          <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap bg-[#17383C] px-3 py-2 text-xs font-bold text-white shadow-lg group-hover:block">
-            Cookie preferences
-          </span>
-        </button>
-      )}
-
     </main>
   );
 }
@@ -2680,7 +2569,6 @@ function MobileHome() {
   const [locationSearchOpen, setLocationSearchOpen] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
-  const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
   const locationSearchRef = useRef<HTMLDivElement | null>(null);
   const locationCacheRef = useRef(new Map<string, LocationSuggestion[]>());
   const valuationForm = useEnquiryForm("home-valuation");
@@ -2775,23 +2663,6 @@ function MobileHome() {
       controller.abort();
     };
   }, [locationQuery, locationSearchOpen]);
-
-  useEffect(() => {
-    const savedPreference = window.localStorage.getItem(
-      "wrenford-ashby-cookie-preference",
-    );
-
-    if (savedPreference) {
-      setCookieNoticeOpen(false);
-    }
-  }, []);
-
-  const saveCookiePreference = (preference: "all" | "essential") => {
-    window.localStorage.setItem("wrenford-ashby-cookie-preference", preference);
-
-    document.cookie = `wa_cookie_preference=${preference}; path=/; max-age=31536000; SameSite=Lax`;
-    setCookieNoticeOpen(false);
-  };
 
   const chooseLocation = (suggestion: LocationSuggestion) => {
     setLocationQuery(suggestion.value);
@@ -3390,47 +3261,7 @@ function MobileHome() {
         </div>
       </section>
 
-      <MobileFooter onOpenCookiePreferences={() => setCookieNoticeOpen(true)} />
-
-      {cookieNoticeOpen && (
-        <aside className="fixed bottom-4 left-4 right-4 z-[1050] border border-[#17383C]/14 bg-white p-4 shadow-[0_20px_60px_rgba(13,37,41,0.24)]">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
-                Cookie preferences
-              </p>
-              <p className="mt-2 text-sm leading-6 text-[#17383C]/62">
-                Essential cookies keep the site working. Optional cookies help
-                us understand how it is used.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setCookieNoticeOpen(false)}
-              aria-label="Close cookie notice"
-              className="text-2xl leading-none text-[#17383C]/48"
-            >
-              ×
-            </button>
-          </div>
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => saveCookiePreference("all")}
-              className="min-h-11 bg-[#17383C] px-3 text-sm font-black text-white"
-            >
-              Accept all
-            </button>
-            <button
-              type="button"
-              onClick={() => saveCookiePreference("essential")}
-              className="min-h-11 border border-[#17383C]/24 px-3 text-sm font-black"
-            >
-              Essential only
-            </button>
-          </div>
-        </aside>
-      )}
+      <MobileFooter />
     </main>
   );
 }
@@ -3603,11 +3434,7 @@ function MobileReveal({ children }: { children: ReactNode }) {
   );
 }
 
-function MobileFooter({
-  onOpenCookiePreferences,
-}: {
-  onOpenCookiePreferences: () => void;
-}) {
+function MobileFooter() {
   return (
     <footer className="bg-[#0D2529] px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-9 text-white">
       <div className="mx-auto max-w-[34rem]">
@@ -3656,7 +3483,7 @@ function MobileFooter({
           <a href="/terms">Terms & conditions</a>
           <button
             type="button"
-            onClick={onOpenCookiePreferences}
+            data-cookie-settings
             className="inline-flex items-center gap-1.5 text-left transition hover:text-white"
           >
             <CookieIcon className="h-3.5 w-3.5" />

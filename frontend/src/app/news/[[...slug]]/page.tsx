@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import SiteFooter from "../../__components/SiteFooter";
 import SiteHeader from "../../__components/SiteHeader";
+import CookiePreferences from "../../__components/CookiePreferences";
 import {
   NEWS_ITEMS,
   type NewsItemInput,
@@ -1199,61 +1200,19 @@ function NewsHomepageMobileFooter() {
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms & conditions</a>
 
-          <label
-            htmlFor="wa-news-cookie-settings"
+          <button
+            type="button"
+            data-cookie-settings
             className="inline-flex cursor-pointer items-center gap-1.5 text-left transition hover:text-white"
           >
             <NewsChromeCookieIcon className="h-3.5 w-3.5" />
             Cookie settings
-          </label>
+          </button>
 
           <span>© 2026 Wrenford Ashby</span>
         </div>
       </div>
     </footer>
-  );
-}
-
-function NewsHomepageCookiePanel() {
-  return (
-    <aside className="wa-news-cookie-panel pointer-events-none fixed bottom-4 left-4 right-4 z-[1200] translate-y-4 border border-[#17383C]/14 bg-white p-4 opacity-0 shadow-[0_20px_60px_rgba(13,37,41,0.24)] transition duration-300 sm:hidden">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
-            Cookie preferences
-          </p>
-
-          <p className="mt-2 text-sm leading-6 text-[#17383C]/62">
-            Essential cookies keep the site working. Optional cookies help us
-            understand how it is used.
-          </p>
-        </div>
-
-        <label
-          htmlFor="wa-news-cookie-settings"
-          aria-label="Close cookie preferences"
-          className="cursor-pointer text-2xl leading-none text-[#17383C]/48"
-        >
-          ×
-        </label>
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <label
-          htmlFor="wa-news-cookie-settings"
-          className="flex min-h-11 cursor-pointer items-center justify-center bg-[#17383C] px-3 text-sm font-black text-white"
-        >
-          Accept all
-        </label>
-
-        <label
-          htmlFor="wa-news-cookie-settings"
-          className="flex min-h-11 cursor-pointer items-center justify-center border border-[#17383C]/24 px-3 text-sm font-black text-[#17383C]"
-        >
-          Essential only
-        </label>
-      </div>
-    </aside>
   );
 }
 
@@ -1268,13 +1227,6 @@ function NewsShell({
         id="wa-news-mobile-menu"
         type="checkbox"
         className="peer sr-only sm:hidden"
-        aria-hidden="true"
-      />
-
-      <input
-        id="wa-news-cookie-settings"
-        type="checkbox"
-        className="sr-only sm:hidden"
         aria-hidden="true"
       />
 
@@ -1320,13 +1272,6 @@ function NewsShell({
             overflow: hidden;
           }
 
-          #wa-news-cookie-settings:checked
-            ~ .wa-news-cookie-panel {
-            pointer-events: auto;
-            opacity: 1;
-            transform: translateY(0);
-          }
-
           @media (prefers-reduced-motion: reduce) {
             .wa-news-enter {
               opacity: 1;
@@ -1337,7 +1282,7 @@ function NewsShell({
         `}</style>
       </main>
 
-      <NewsHomepageCookiePanel />
+      <CookiePreferences />
     </>
   );
 }

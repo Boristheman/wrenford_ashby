@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import SiteFooter from "../__components/SiteFooter";
 import SiteHeader from "../__components/SiteHeader";
+import CookiePreferences, { openCookieSettings } from "../__components/CookiePreferences";
 import { useEnquiryForm } from "../__components/useEnquiryForm";
 
 function ArrowIcon() {
@@ -402,7 +403,6 @@ const processSteps = [
 export default function ContactPage() {
   const enquiryForm = useEnquiryForm("general-enquiry");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -415,27 +415,7 @@ export default function ContactPage() {
     };
   }, [mobileMenuOpen]);
 
-  useEffect(() => {
-    const savedPreference = window.localStorage.getItem(
-      "wrenford-ashby-cookie-preference",
-    );
 
-    if (savedPreference) {
-      setCookieNoticeOpen(false);
-    }
-  }, []);
-
-  const saveCookiePreference = (
-    preference: "all" | "essential",
-  ) => {
-    window.localStorage.setItem(
-      "wrenford-ashby-cookie-preference",
-      preference,
-    );
-
-    document.cookie = `wa_cookie_preference=${preference}; path=/; max-age=31536000; SameSite=Lax`;
-    setCookieNoticeOpen(false);
-  };
 
   return (
     <main className="min-h-screen bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
@@ -857,7 +837,7 @@ export default function ContactPage() {
         </section>
 
         <ContactMobileFooter
-          onOpenCookiePreferences={() => setCookieNoticeOpen(true)}
+          onOpenCookiePreferences={openCookieSettings}
         />
       </div>
 
@@ -1180,49 +1160,7 @@ export default function ContactPage() {
         <SiteFooter />
       </div>
 
-      {cookieNoticeOpen && (
-        <aside className="fixed bottom-4 left-4 right-4 z-[1200] border border-[#17383C]/14 bg-white p-4 shadow-[0_20px_60px_rgba(13,37,41,0.24)] sm:hidden">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
-                Cookie preferences
-              </p>
-
-              <p className="mt-2 text-sm leading-6 text-[#17383C]/62">
-                Essential cookies keep the site working. Optional cookies help
-                us understand how it is used.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setCookieNoticeOpen(false)}
-              aria-label="Close cookie preferences"
-              className="text-2xl leading-none text-[#17383C]/48"
-            >
-              ×
-            </button>
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => saveCookiePreference("all")}
-              className="min-h-11 bg-[#17383C] px-3 text-sm font-black text-white"
-            >
-              Accept all
-            </button>
-
-            <button
-              type="button"
-              onClick={() => saveCookiePreference("essential")}
-              className="min-h-11 border border-[#17383C]/24 px-3 text-sm font-black text-[#17383C]"
-            >
-              Essential only
-            </button>
-          </div>
-        </aside>
-      )}
+      <CookiePreferences />
     </main>
   );
 }

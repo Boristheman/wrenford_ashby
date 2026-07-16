@@ -10,6 +10,7 @@ import {
 } from "react";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import CookiePreferences, { openCookieSettings } from "./CookiePreferences";
 import { useEnquiryForm } from "./useEnquiryForm";
 import {
   PROPERTIES,
@@ -783,64 +784,6 @@ function HomeStyleMobileFooter({
   );
 }
 
-function HomeStyleCookieNotice({
-  open,
-  onClose,
-  onSave,
-}: {
-  open: boolean;
-  onClose: () => void;
-  onSave: (preference: "all" | "essential") => void;
-}) {
-  if (!open) {
-    return null;
-  }
-
-  return (
-    <aside className="fixed bottom-4 left-4 right-4 z-[1050] border border-[#17383C]/14 bg-white p-4 shadow-[0_20px_60px_rgba(13,37,41,0.24)] sm:hidden">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
-            Cookie preferences
-          </p>
-          <p className="mt-2 text-sm leading-6 text-[#17383C]/62">
-            Essential cookies keep the site working. Optional cookies help us
-            understand how it is used.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close cookie notice"
-          className="text-2xl leading-none text-[#17383C]/48"
-        >
-          ×
-        </button>
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          onClick={() => onSave("all")}
-          className="min-h-11 bg-[#17383C] px-3 text-sm font-black text-white"
-        >
-          Accept all
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onSave("essential")}
-          className="min-h-11 border border-[#17383C]/24 px-3 text-sm font-black text-[#17383C]"
-        >
-          Essential only
-        </button>
-      </div>
-    </aside>
-  );
-}
-
-
 function PropertyCard({
   property,
   favourite,
@@ -961,7 +904,6 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
     "alerts" | "viewing"
   >("alerts");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
   const alertsForm = useEnquiryForm("property-alerts");
   const viewingForm = useEnquiryForm("property-viewing", {
     onSuccess: () => setViewingProperty(""),
@@ -970,25 +912,7 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
   const isBuy = mode === "buy";
 
 
-  useEffect(() => {
-    const savedPreference = window.localStorage.getItem(
-      "wrenford-ashby-cookie-preference",
-    );
 
-    if (savedPreference) {
-      setCookieNoticeOpen(false);
-    }
-  }, []);
-
-  const saveCookiePreference = (preference: "all" | "essential") => {
-    window.localStorage.setItem(
-      "wrenford-ashby-cookie-preference",
-      preference,
-    );
-
-    document.cookie = `wa_cookie_preference=${preference}; path=/; max-age=31536000; SameSite=Lax`;
-    setCookieNoticeOpen(false);
-  };
 
   useEffect(() => {
     const html = document.documentElement;
@@ -2095,18 +2019,14 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
       </section>
 
       <HomeStyleMobileFooter
-        onOpenCookiePreferences={() => setCookieNoticeOpen(true)}
+        onOpenCookiePreferences={openCookieSettings}
       />
 
       <div className="hidden sm:block">
         <SiteFooter />
       </div>
 
-      <HomeStyleCookieNotice
-        open={cookieNoticeOpen}
-        onClose={() => setCookieNoticeOpen(false)}
-        onSave={saveCookiePreference}
-      />
+      <CookiePreferences />
       </main>
     </>
   );

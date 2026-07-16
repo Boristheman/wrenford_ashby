@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import SiteFooter from "../__components/SiteFooter";
 import SiteHeader from "../__components/SiteHeader";
+import CookiePreferences from "../__components/CookiePreferences";
 import { useEnquiryForm } from "../__components/useEnquiryForm";
 
 function ArrowIcon({ className = "h-4 w-4" }: { className?: string }) {
@@ -911,6 +912,7 @@ export default function SellPage() {
       <div data-sell-reveal>
         <SiteFooter />
       </div>
+      <CookiePreferences />
     </main>
   );
 }

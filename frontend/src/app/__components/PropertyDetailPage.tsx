@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import CookiePreferences, { openCookieSettings } from "./CookiePreferences";
 import { useEnquiryForm } from "./useEnquiryForm";
 import { getPropertyGallery, type Property } from "../__data/properties";
 
@@ -338,64 +339,6 @@ function HomeStyleMobileFooter({
   );
 }
 
-function HomeStyleCookieNotice({
-  open,
-  onClose,
-  onSave,
-}: {
-  open: boolean;
-  onClose: () => void;
-  onSave: (preference: "all" | "essential") => void;
-}) {
-  if (!open) {
-    return null;
-  }
-
-  return (
-    <aside className="fixed bottom-4 left-4 right-4 z-[1050] border border-[#17383C]/14 bg-white p-4 shadow-[0_20px_60px_rgba(13,37,41,0.24)] sm:hidden">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
-            Cookie preferences
-          </p>
-          <p className="mt-2 text-sm leading-6 text-[#17383C]/62">
-            Essential cookies keep the site working. Optional cookies help us
-            understand how it is used.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close cookie notice"
-          className="text-2xl leading-none text-[#17383C]/48"
-        >
-          ×
-        </button>
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          onClick={() => onSave("all")}
-          className="min-h-11 bg-[#17383C] px-3 text-sm font-black text-white"
-        >
-          Accept all
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onSave("essential")}
-          className="min-h-11 border border-[#17383C]/24 px-3 text-sm font-black text-[#17383C]"
-        >
-          Essential only
-        </button>
-      </div>
-    </aside>
-  );
-}
-
-
 function TickIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-4 w-4">
@@ -422,27 +365,8 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 export default function PropertyDetailPage({ property }: { property: Property }) {
   const viewingForm = useEnquiryForm("property-viewing");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
 
-  useEffect(() => {
-    const savedPreference = window.localStorage.getItem(
-      "wrenford-ashby-cookie-preference",
-    );
 
-    if (savedPreference) {
-      setCookieNoticeOpen(false);
-    }
-  }, []);
-
-  const saveCookiePreference = (preference: "all" | "essential") => {
-    window.localStorage.setItem(
-      "wrenford-ashby-cookie-preference",
-      preference,
-    );
-
-    document.cookie = `wa_cookie_preference=${preference}; path=/; max-age=31536000; SameSite=Lax`;
-    setCookieNoticeOpen(false);
-  };
 
   const gallery = getPropertyGallery(property);
   const backHref = property.mode === "buy" ? "/buy" : "/rent";
@@ -811,18 +735,14 @@ export default function PropertyDetailPage({ property }: { property: Property })
       </section>
 
       <HomeStyleMobileFooter
-        onOpenCookiePreferences={() => setCookieNoticeOpen(true)}
+        onOpenCookiePreferences={openCookieSettings}
       />
 
       <div className="hidden sm:block">
         <SiteFooter />
       </div>
 
-      <HomeStyleCookieNotice
-        open={cookieNoticeOpen}
-        onClose={() => setCookieNoticeOpen(false)}
-        onSave={saveCookiePreference}
-      />
+      <CookiePreferences />
       </main>
     </>
   );
