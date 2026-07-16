@@ -2084,7 +2084,7 @@ function DesktopHome() {
 }
 
 
-// Mobile home view now lives in this page file.
+// Mobile home viw now lives in this page file.
 type HomeMobileSearchMode = "buy" | "rent";
 
 type MobileProperty = {
