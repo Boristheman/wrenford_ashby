@@ -340,7 +340,19 @@ export default function PropertyDetailPage({ property }: { property: Property })
               <p className="text-xs font-black uppercase tracking-[0.12em] text-[#6B908D]">Wrenford Ashby</p>
               <p className="mt-2 text-sm font-black text-[#17383C]">Wickford office</p>
               <p className="mt-1 text-sm leading-6 text-[#17383C]/58">
-                01268 000 000<br />hello@wrenfordashby.co.uk
+                <a
+                  href="tel:01268000000"
+                  className="transition hover:text-[#17383C]"
+                >
+                  01268 000 000
+                </a>
+                <br />
+                <a
+                  href="mailto:hello@wrenfordashby.co.uk"
+                  className="transition hover:text-[#17383C]"
+                >
+                  hello@wrenfordashby.co.uk
+                </a>
               </p>
             </div>
           </aside>
