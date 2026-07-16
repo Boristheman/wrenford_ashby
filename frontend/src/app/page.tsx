@@ -1648,12 +1648,9 @@ function DesktopHome() {
                     Trustpilot
                   </span>
 
-                  <a
-                    href="#contact"
-                    className="text-[11px] font-bold underline decoration-white/45 underline-offset-4 transition hover:decoration-white sm:text-xs"
-                  >
-                    Read our reviews
-                  </a>
+                  <span className="text-[11px] font-semibold text-white/72 sm:text-xs">
+                    from 238 reviews
+                  </span>
                 </div>
 
                 <span className="hidden h-5 w-px bg-white/25 sm:block" />
@@ -1674,12 +1671,9 @@ function DesktopHome() {
                     from 391 reviews
                   </span>
 
-                  <a
-                    href="#contact"
-                    className="text-[11px] font-bold underline decoration-white/45 underline-offset-4 transition hover:decoration-white sm:text-xs"
-                  >
-                    View Google reviews
-                  </a>
+                  <span className="text-[11px] font-semibold text-white/72 sm:text-xs">
+                    from 284 reviews
+                  </span>
                 </div>
               </div>
             </div>
@@ -2757,38 +2751,43 @@ function MobileHome() {
         />
         <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[#071C20]/92 via-[#071C20]/46 to-transparent" />
 
-        <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-center px-4 pb-4 pt-[5.65rem]">
-          <p className="wa-mobile-hero-in text-[11px] font-black uppercase tracking-[0.18em] text-[#C9DDD7]">
-            Estate agents for Wickford & South Essex
-          </p>
-
-          <h1 className="wa-mobile-hero-in mt-6 w-full max-w-none text-[clamp(3.55rem,16vw,5.45rem)] font-black leading-[0.88] tracking-[-0.072em] [animation-delay:100ms]">
-            Helping Essex
-            <br />
-            move for
-            <br />
-            24 years.
-          </h1>
-
-          <div className="wa-mobile-hero-in mt-9 grid grid-cols-2 gap-4 [animation-delay:210ms]">
-            <a
-              href="#valuation"
-              className="flex min-h-[3.75rem] items-center justify-between bg-[#6B908D] px-4 text-sm font-black text-white"
+        <div className="relative z-10 flex min-h-[100svh] w-full flex-col px-4 pb-6 pt-[5.65rem]">
+          <div className="flex flex-1 flex-col justify-end">
+            <p
+              className="wa-mobile-hero-in text-[11px] font-black uppercase tracking-[0.18em] text-[#C9DDD7]"
+              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.65)" }}
             >
-              Valuation
-              <HomeMobileArrowIcon className="h-4 w-4" />
-            </a>
+              Estate agents for Wickford & South Essex
+            </p>
 
-            <a
-              href="#mobile-properties"
-              className="flex min-h-[3.75rem] items-center justify-between bg-[#1F6177] px-4 text-sm font-black text-white"
-            >
-              Properties
-              <HomeMobileArrowIcon className="h-4 w-4" />
-            </a>
+            <h1 className="wa-mobile-hero-in mt-3 mb-8 w-full max-w-none text-[clamp(4.5rem,22vw,7.75rem)] font-black leading-[0.86] tracking-[-0.075em] [animation-delay:100ms]">
+              Helping Essex
+              <br />
+              move for
+              <br />
+              24 years.
+            </h1>
+
+            <div className="wa-mobile-hero-in mt-5 grid grid-cols-2 gap-4 [animation-delay:210ms]">
+              <a
+                href="#valuation"
+                className="flex min-h-[3.75rem] items-center justify-between bg-[#6B908D] px-4 text-sm font-black text-white"
+              >
+                Valuation
+                <HomeMobileArrowIcon className="h-4 w-4" />
+              </a>
+
+              <a
+                href="#mobile-properties"
+                className="flex min-h-[3.75rem] items-center justify-between bg-[#1F6177] px-4 text-sm font-black text-white"
+              >
+                Properties
+                <HomeMobileArrowIcon className="h-4 w-4" />
+              </a>
+            </div>
           </div>
 
-          <div className="wa-mobile-hero-in mt-7 w-full [animation-delay:320ms]">
+          <div className="wa-mobile-hero-in mt-5 w-full [animation-delay:320ms]">
             <div className="flex min-h-10 flex-wrap items-center gap-x-3 gap-y-2">
               <span className="text-base font-black text-white">4.8</span>
 
@@ -2810,19 +2809,41 @@ function MobileHome() {
                 <span className="text-lg leading-none text-[#00B67A]">★</span>
                 Trustpilot
               </span>
+
+              <span className="text-xs font-semibold text-white/68">
+                from 238 reviews
+              </span>
             </div>
 
             <div className="mt-2 flex min-h-10 flex-wrap items-center gap-x-3 gap-y-2">
-              <img
-                src="/graphics/logos/google.png"
-                alt="Google"
-                className="h-7 w-auto max-w-[104px] object-contain"
-              />
-
               <span className="text-base font-black text-white">4.9</span>
 
+              <div
+                className="flex items-center gap-0.5"
+                aria-label="Google rating 4.9 out of 5"
+              >
+                {[0, 1, 2, 3, 4].map((star) => (
+                  <span
+                    key={star}
+                    className="text-lg leading-none text-[#FBBC04]"
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+
+              <span className="inline-flex items-center gap-1 text-sm font-black text-white">
+                <img
+                  src="/graphics/logos/google.png"
+                  alt=""
+                  draggable={false}
+                  className="h-[1.15rem] w-[1.15rem] shrink-0 object-contain"
+                />
+                Google
+              </span>
+
               <span className="text-xs font-semibold text-white/68">
-                from 391 local reviews
+                from 284 reviews
               </span>
             </div>
           </div>
