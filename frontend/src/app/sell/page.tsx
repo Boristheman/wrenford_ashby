@@ -358,6 +358,42 @@ export default function SellPage() {
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-sell-reveal]"),
+    );
+
+    if (!items.length) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reducedMotion) {
+      items.forEach((item) => item.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -7% 0px",
+      },
+    );
+
+    items.forEach((item) => observer.observe(item));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
       <style>{`
@@ -389,6 +425,66 @@ export default function SellPage() {
             min-height: 210px;
           }
         }
+
+        @keyframes sellHeroImageIn {
+          from {
+            opacity: 0;
+            transform: scale(1.055);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes sellHeroItemIn {
+          from {
+            opacity: 0;
+            transform: translate3d(0, 24px, 0);
+          }
+          to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .sell-hero-image-in {
+          animation: sellHeroImageIn 1100ms cubic-bezier(.22,1,.36,1) both;
+          will-change: opacity, transform;
+        }
+
+        .sell-hero-item-in {
+          opacity: 0;
+          animation: sellHeroItemIn 760ms cubic-bezier(.22,1,.36,1) both;
+          animation-delay: var(--hero-delay, 0ms);
+          will-change: opacity, transform;
+        }
+
+        [data-sell-reveal] {
+          opacity: 0;
+          transform: translate3d(0, 30px, 0);
+          transition:
+            opacity 760ms cubic-bezier(.22,1,.36,1),
+            transform 760ms cubic-bezier(.22,1,.36,1);
+          transition-delay: var(--reveal-delay, 0ms);
+          will-change: opacity, transform;
+        }
+
+        [data-sell-reveal].is-visible {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .sell-hero-image-in,
+          .sell-hero-item-in,
+          [data-sell-reveal] {
+            opacity: 1 !important;
+            transform: none !important;
+            animation: none !important;
+            transition: none !important;
+          }
+        }
       `}</style>
 
       <SellMobileHeader
@@ -411,7 +507,7 @@ export default function SellPage() {
         <img
           src="/graphics/hero/london.png"
           alt="Homes across Essex"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="sell-hero-image-in absolute inset-0 h-full w-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-[#071C20]/10 sm:bg-[#071C20]/28" />
         <div className="absolute inset-x-0 top-0 h-[55%] bg-gradient-to-b from-[#071C20]/76 via-[#071C20]/24 to-transparent sm:hidden" />
@@ -420,17 +516,26 @@ export default function SellPage() {
 
         <div className="sell-hero-inner relative mx-auto flex max-w-[1480px] flex-col px-4 pb-4 pt-7 sm:block sm:px-8 sm:py-14 lg:px-12 lg:py-16">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#C7D9D4] sm:hidden">
+            <p
+              className="sell-hero-item-in text-[10px] font-black uppercase tracking-[0.18em] text-[#D9E7E2] sm:hidden"
+              style={{ "--hero-delay": "140ms" } as React.CSSProperties}
+            >
               Selling your home
             </p>
 
-            <h1 className="mt-3 text-[3.8rem] font-black leading-[0.84] tracking-[-0.07em] sm:mt-0 sm:text-[clamp(3.2rem,6vw,6.8rem)] sm:leading-[0.92] sm:tracking-[-0.055em]">
+            <h1
+              className="sell-hero-item-in mt-3 text-[3.8rem] font-black leading-[0.84] tracking-[-0.07em] sm:mt-0 sm:text-[clamp(3.2rem,6vw,6.8rem)] sm:leading-[0.92] sm:tracking-[-0.055em]"
+              style={{ "--hero-delay": "220ms" } as React.CSSProperties}
+            >
               Clear from the
               <br />
               very beginning.
             </h1>
 
-            <p className="mt-4 max-w-[29rem] text-[0.82rem] leading-[1.2rem] text-white/80 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8 sm:text-white/72">
+            <p
+              className="sell-hero-item-in mt-4 max-w-[29rem] text-[0.86rem] font-semibold leading-[1.28rem] text-white/88 sm:mt-6 sm:max-w-3xl sm:text-lg sm:font-medium sm:leading-8 sm:text-white/78"
+              style={{ "--hero-delay": "320ms" } as React.CSSProperties}
+            >
               We agree the fee, asking price and launch plan before any work
               begins. Everything needed to market the property properly is
               included from day one.
@@ -438,14 +543,17 @@ export default function SellPage() {
           </div>
 
           <div className="mt-auto sm:mt-10">
-            <div className="grid grid-cols-3 gap-2 sm:gap-px sm:border sm:border-white/18 sm:bg-white/18">
+            <div
+              className="sell-hero-item-in grid grid-cols-3 gap-2 sm:gap-px sm:border sm:border-white/18 sm:bg-white/18"
+              style={{ "--hero-delay": "430ms" } as React.CSSProperties}
+            >
               {feeDetails.map((fee) => (
                 <article
                   key={fee.title}
                   className="sell-fee-card flex min-w-0 flex-col justify-between overflow-hidden border border-white/35 bg-white p-2.5 text-[#17383C] shadow-[0_8px_20px_rgba(0,0,0,0.16)] sm:border-0 sm:p-7 sm:shadow-none"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-[7px] font-black uppercase tracking-[0.09em] text-[#6B908D] sm:text-[10px] sm:tracking-[0.13em]">
+                    <p className="truncate text-[8px] font-black uppercase tracking-[0.09em] text-[#527875] sm:text-[10px] sm:tracking-[0.13em]">
                       {fee.title}
                     </p>
                     <p className="mt-2 break-words text-[0.98rem] font-black leading-[0.94] tracking-[-0.04em] sm:mt-3 sm:text-[clamp(2rem,3vw,3.1rem)]">
@@ -453,14 +561,17 @@ export default function SellPage() {
                     </p>
                   </div>
 
-                  <p className="overflow-hidden text-[0.45rem] leading-[0.61rem] text-[#17383C]/56 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3] sm:mt-6 sm:block sm:text-sm sm:leading-6 sm:text-[#17383C]/52">
+                  <p className="overflow-hidden text-[0.54rem] font-bold leading-[0.72rem] text-[#17383C]/72 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3] sm:mt-6 sm:block sm:text-sm sm:font-semibold sm:leading-6 sm:text-[#17383C]/62">
                     {fee.detail}
                   </p>
                 </article>
               ))}
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:gap-3">
+            <div
+              className="sell-hero-item-in mt-3 grid grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:gap-3"
+              style={{ "--hero-delay": "540ms" } as React.CSSProperties}
+            >
               <a
                 href="#book-valuation"
                 style={{ color: "#ffffff" }}
@@ -488,7 +599,8 @@ export default function SellPage() {
         className="scroll-mt-28 bg-white px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
       >
         <div className="mx-auto max-w-[1480px]">
-          <p className="text-[10px] font-black uppercase tracking-[0.17em] text-[#6B908D] sm:text-xs sm:tracking-[0.16em]">
+          <div data-sell-reveal>
+            <p className="text-[10px] font-black uppercase tracking-[0.17em] text-[#6B908D] sm:text-xs sm:tracking-[0.16em]">
             Why choose Wrenford Ashby
           </p>
 
@@ -496,22 +608,29 @@ export default function SellPage() {
             Local buyers already looking.
           </h2>
 
-          <p className="mt-4 max-w-2xl text-[0.88rem] leading-6 text-[#17383C]/58 sm:mt-6 sm:text-lg sm:leading-8">
-            A realistic launch is stronger when the right buyers are already
-            registered, qualified and ready to view.
-          </p>
+          <p className="mt-4 max-w-2xl text-[0.88rem] font-medium leading-6 text-[#17383C]/66 sm:mt-6 sm:text-lg sm:leading-8">
+              A realistic launch is stronger when the right buyers are already
+              registered, qualified and ready to view.
+            </p>
+          </div>
 
           <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 sm:mt-16 sm:gap-x-12 sm:gap-y-16 lg:grid-cols-3">
             {sellerStats.map((stat, index) => (
               <article
                 key={stat.value}
+                data-sell-reveal
                 className={index === sellerStats.length - 1 ? "col-span-2 max-w-[18rem] lg:col-span-1 lg:max-w-none" : ""}
+                style={
+                  {
+                    "--reveal-delay": `${index * 85}ms`,
+                  } as React.CSSProperties
+                }
               >
                 <div className="mb-4 h-px w-14 border-t border-dashed border-[#C49A43] sm:mb-7 sm:w-28" />
                 <p className="text-[2.8rem] font-black leading-none tracking-[-0.065em] text-[#0F4657] sm:text-[clamp(3.5rem,7vw,7.4rem)]">
                   <AnimatedStat value={stat.value} />
                 </p>
-                <p className="mt-3 max-w-[11rem] text-[0.76rem] leading-[1.05rem] text-[#17383C]/58 sm:mt-5 sm:max-w-md sm:text-lg sm:leading-7">
+                <p className="mt-3 max-w-[11rem] text-[0.76rem] font-semibold leading-[1.05rem] text-[#17383C]/66 sm:mt-5 sm:max-w-md sm:text-lg sm:font-medium sm:leading-7">
                   {stat.label}
                 </p>
               </article>
@@ -525,7 +644,10 @@ export default function SellPage() {
         className="scroll-mt-28 bg-[#EAF0ED] px-3 py-6 sm:px-8 sm:py-16 lg:px-12"
       >
         <div className="mx-auto grid max-w-[1480px] items-stretch gap-0 sm:gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:gap-12">
-          <div className="hidden h-full flex-col justify-between border border-[#17383C]/10 bg-white p-9 sm:flex sm:min-h-[720px] lg:p-10 xl:p-12">
+          <div
+            data-sell-reveal
+            className="hidden h-full flex-col justify-between border border-[#17383C]/10 bg-white p-9 sm:flex sm:min-h-[720px] lg:p-10 xl:p-12"
+          >
             <div>
               <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6B908D]">
                 Request a valuation
@@ -569,7 +691,11 @@ export default function SellPage() {
             </div>
           </div>
 
-          <div className="h-full bg-[#17383C] p-4 text-white shadow-[0_18px_48px_rgba(23,56,60,0.14)] sm:p-8 lg:p-10">
+          <div
+            data-sell-reveal
+            className="h-full bg-[#17383C] p-4 text-white shadow-[0_18px_48px_rgba(23,56,60,0.14)] sm:p-8 lg:p-10"
+            style={{ "--reveal-delay": "100ms" } as React.CSSProperties}
+          >
             {valuationForm.status === "success" ? (
               <div className="flex min-h-[420px] flex-col justify-center sm:min-h-[590px]">
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-[#BFD3CD]">
@@ -724,7 +850,10 @@ export default function SellPage() {
       >
         <div className="mx-auto max-w-[1480px]">
           <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
-            <div className="lg:sticky lg:top-32 lg:self-start">
+            <div
+              data-sell-reveal
+              className="lg:sticky lg:top-32 lg:self-start"
+            >
               <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6B908D]">
                 The full selling process
               </p>
@@ -745,7 +874,13 @@ export default function SellPage() {
                 <article
                   key={step.number}
                   id={index === 6 ? "after-offer" : undefined}
+                  data-sell-reveal
                   className="relative grid grid-cols-[2.7rem_1fr] gap-x-3 gap-y-1 border-b border-[#17383C]/10 py-5 sm:grid-cols-[88px_180px_1fr] sm:gap-6 sm:py-8"
+                  style={
+                    {
+                      "--reveal-delay": `${Math.min(index * 55, 220)}ms`,
+                    } as React.CSSProperties
+                  }
                 >
                   <p className="relative z-10 flex h-8 w-8 items-center justify-center bg-[#EAF0ED] text-[0.65rem] font-black tracking-[0.1em] text-[#17383C] sm:block sm:h-auto sm:w-auto sm:bg-transparent sm:text-sm sm:text-[#6B908D]">
                     {step.number}
@@ -770,7 +905,9 @@ export default function SellPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <div data-sell-reveal>
+        <SiteFooter />
+      </div>
     </main>
   );
 }
