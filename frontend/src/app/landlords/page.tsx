@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SiteFooter from "../__components/SiteFooter";
 import SiteHeader from "../__components/SiteHeader";
 import { useEnquiryForm } from "../__components/useEnquiryForm";
@@ -67,6 +67,307 @@ function ArrowIcon() {
   );
 }
 
+function LandlordsMobileHeader({
+  menuOpen,
+  onOpen,
+}: {
+  menuOpen: boolean;
+  onOpen: () => void;
+}) {
+  return (
+    <header className="fixed inset-x-0 top-0 z-[1000] border-b border-[#17383C]/12 bg-white text-[#17383C] shadow-[0_10px_28px_rgba(13,37,41,0.12)] sm:hidden">
+      <div className="grid h-[5.1rem] grid-cols-[1fr_auto] items-center gap-3 px-4">
+        <a href="/" aria-label="Wrenford Ashby home" className="min-w-0">
+          <img
+            src="/graphics/logos/wa.png"
+            alt="Wrenford Ashby"
+            draggable={false}
+            className="-ml-1 h-[4.25rem] w-auto max-w-[17rem] origin-left scale-[1.25] object-contain object-left"
+          />
+        </a>
+
+        <div className="flex items-center gap-2">
+          <a
+            href="tel:01268000000"
+            aria-label="Call Wrenford Ashby"
+            className="flex h-10 items-center gap-2 px-1 text-[0.73rem] font-black tracking-[0.01em] text-[#17383C]"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+              className="h-4 w-4"
+            >
+              <path
+                d="M8.2 3.8 10 8.2 7.8 9.6a14 14 0 0 0 6.6 6.6l1.4-2.2 4.4 1.8v3a2 2 0 0 1-2 2C9.9 20.8 3.2 14.1 3.2 5.8a2 2 0 0 1 2-2h3Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="hidden min-[390px]:inline">01268 000 000</span>
+          </a>
+
+          <button
+            type="button"
+            aria-label="Open navigation"
+            aria-expanded={menuOpen}
+            onClick={onOpen}
+            className="flex h-11 w-10 items-center justify-end"
+          >
+            <span className="relative block h-[18px] w-7">
+              <span className="absolute left-0 top-0 h-[2px] w-7 bg-current" />
+              <span className="absolute left-0 top-2 h-[2px] w-7 bg-current" />
+              <span className="absolute left-0 top-4 h-[2px] w-7 bg-current" />
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+const landlordsMobileNavItems = [
+  { label: "Home", href: "/" },
+  { label: "Buy", href: "/buy" },
+  { label: "Rent", href: "/rent" },
+  { label: "Sell", href: "/sell" },
+  { label: "New Homes", href: "/new-homes" },
+  { label: "Landlords", href: "/landlords" },
+  { label: "About", href: "/about" },
+  { label: "News", href: "/news" },
+];
+
+function LandlordsMobileDrawer({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Close menu overlay"
+        onClick={onClose}
+        className="fixed inset-0 z-[1090] bg-[#061719]/62 backdrop-blur-[1px] sm:hidden"
+      />
+
+      <aside className="landlords-mobile-drawer-in fixed bottom-0 right-0 top-0 z-[1100] flex w-[min(82vw,22rem)] max-w-full flex-col overflow-hidden bg-white text-[#17383C] shadow-[-24px_0_64px_rgba(0,0,0,0.22)] sm:hidden">
+        <div className="flex min-h-[5rem] shrink-0 items-center justify-between border-b border-[#17383C]/8 px-5 pt-[env(safe-area-inset-top)]">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6B908D]">
+            Navigation
+          </p>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-11 w-11 items-center justify-end"
+            aria-label="Close navigation"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              aria-hidden="true"
+              className="h-6 w-6"
+            >
+              <path d="M6 6l12 12" />
+              <path d="M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+
+        <nav
+          className="min-h-0 flex-1 overflow-y-auto px-5 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          aria-label="Mobile navigation"
+        >
+          {landlordsMobileNavItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={onClose}
+              className="group flex min-h-[3.45rem] items-center justify-between gap-4 border-b border-[#17383C]/8 text-[0.98rem] font-bold tracking-[-0.012em] active:opacity-50"
+            >
+              <span>{item.label}</span>
+              <ArrowIcon />
+            </a>
+          ))}
+        </nav>
+
+        <div className="shrink-0 border-t border-[#17383C]/8 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+          <a
+            href="/contact"
+            onClick={onClose}
+            style={{ color: "#ffffff" }}
+            className="flex min-h-14 items-center justify-between bg-[#17383C] px-5 text-sm font-black !text-white visited:!text-white"
+          >
+            <span style={{ color: "#ffffff" }}>Contact us</span>
+            <ArrowIcon />
+          </a>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+function LandlordsFooterPhoneIcon({
+  className = "h-4 w-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M8.2 3.8 10 8.2 7.8 9.6a14 14 0 0 0 6.6 6.6l1.4-2.2 4.4 1.8v3a2 2 0 0 1-2 2C9.9 20.8 3.2 14.1 3.2 5.8a2 2 0 0 1 2-2h3Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function LandlordsFooterMailIcon({
+  className = "h-4 w-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M3.5 6.5h17v11h-17v-11Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m4.5 7.5 7.5 6 7.5-6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function LandlordsCookieIcon({
+  className = "h-7 w-7",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+    >
+      <path
+        d="M39 23.5A15.5 15.5 0 1 1 24.5 9c.4 4.6 4.1 8.3 8.7 8.7.2 3.1 2.7 5.6 5.8 5.8Z"
+        fill="currentColor"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <circle cx="19" cy="18" r="2.2" fill="#17383C" />
+      <circle cx="16" cy="28" r="2.4" fill="#17383C" />
+      <circle cx="27" cy="29" r="2.1" fill="#17383C" />
+      <circle cx="25" cy="20" r="1.8" fill="#17383C" />
+    </svg>
+  );
+}
+
+function LandlordsMobileFooter({
+  onOpenCookiePreferences,
+}: {
+  onOpenCookiePreferences: () => void;
+}) {
+  return (
+    <footer className="bg-[#0D2529] px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-9 text-white sm:hidden">
+      <div className="mx-auto max-w-[34rem]">
+        <a href="/" aria-label="Wrenford Ashby home">
+          <img
+            src="/graphics/logos/wa.png"
+            alt="Wrenford Ashby"
+            draggable={false}
+            className="h-[4.9rem] w-auto max-w-[16rem] object-contain object-left"
+          />
+        </a>
+
+        <p className="mt-2 max-w-[20rem] text-sm leading-6 text-white/52">
+          Independent estate agents for Wickford and the surrounding South Essex
+          area.
+        </p>
+
+        <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-3 border-y border-white/12 py-6 text-sm font-bold text-white/64">
+          <a href="/buy">Buy</a>
+          <a href="/rent">Rent</a>
+          <a href="/sell">Sell</a>
+          <a href="/landlords">Landlords</a>
+          <a href="/new-homes">New Homes</a>
+          <a href="/about">About</a>
+          <a href="/news">News</a>
+          <a href="/contact">Contact</a>
+        </div>
+
+        <div className="mt-6 space-y-3 text-sm">
+          <a
+            href="tel:01268000000"
+            className="flex items-center gap-3 font-black text-white"
+          >
+            <LandlordsFooterPhoneIcon className="h-4 w-4 text-[#BFD3CD]" />
+            01268 000 000
+          </a>
+
+          <a
+            href="mailto:hello@wrenfordashby.co.uk"
+            className="flex items-center gap-3 text-white/60"
+          >
+            <LandlordsFooterMailIcon className="h-4 w-4 text-[#BFD3CD]" />
+            hello@wrenfordashby.co.uk
+          </a>
+        </div>
+
+        <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/12 pt-5 text-xs font-bold text-white/42">
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms & conditions</a>
+          <button
+            type="button"
+            onClick={onOpenCookiePreferences}
+            className="inline-flex items-center gap-1.5 text-left transition hover:text-white"
+          >
+            <LandlordsCookieIcon className="h-3.5 w-3.5" />
+            Cookie settings
+          </button>
+          <span>© 2026 Wrenford Ashby</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+
 function InfoGrid({
   items,
   dark = false,
@@ -126,6 +427,28 @@ function InfoGrid({
 
 export default function LandlordsPage() {
   const enquiryForm = useEnquiryForm("landlord-enquiry");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
+
+  useEffect(() => {
+    const savedPreference = window.localStorage.getItem(
+      "wrenford-ashby-cookie-preference",
+    );
+
+    if (savedPreference) {
+      setCookieNoticeOpen(false);
+    }
+  }, []);
+
+  const saveCookiePreference = (preference: "all" | "essential") => {
+    window.localStorage.setItem(
+      "wrenford-ashby-cookie-preference",
+      preference,
+    );
+
+    document.cookie = `wa_cookie_preference=${preference}; path=/; max-age=31536000; SameSite=Lax`;
+    setCookieNoticeOpen(false);
+  };
 
   useEffect(() => {
     const elements = Array.from(
@@ -167,82 +490,111 @@ export default function LandlordsPage() {
 
   return (
     <main className="min-h-screen overflow-x-clip bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
-      <div className="sticky top-0 z-[200] w-full bg-white">
+      <LandlordsMobileHeader
+        menuOpen={mobileMenuOpen}
+        onOpen={() => setMobileMenuOpen(true)}
+      />
+      <LandlordsMobileDrawer
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
+
+      <div className="hidden sm:block">
         <SiteHeader />
       </div>
 
       <section
         id="landlord-services"
-        className="relative overflow-hidden bg-[#0D2529] px-5 py-12 text-white sm:px-8 sm:py-14 lg:px-12 lg:py-16"
+        className="landlords-hero relative overflow-x-clip overflow-y-visible bg-[#0D2529] text-white"
       >
         <img
           src="/graphics/hero/tree.png"
           alt="Mature tree and open countryside in South Essex"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          draggable={false}
+          className="landlords-hero-image-in pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-center"
         />
 
-        <div className="absolute inset-0 bg-[#071C20]/22" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071C20]/62 via-[#071C20]/22 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#071C20]/68 to-transparent" />
+        <div className="absolute inset-0 bg-[#071C20]/12 sm:bg-[#071C20]/25" />
+        <div className="absolute inset-x-0 top-0 h-[58%] bg-gradient-to-b from-[#071C20]/78 via-[#071C20]/28 to-transparent sm:hidden" />
+        <div className="absolute inset-x-0 bottom-0 h-[52%] bg-gradient-to-t from-[#071C20]/88 via-[#071C20]/24 to-transparent sm:hidden" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-[#071C20]/64 via-[#071C20]/24 to-transparent sm:block" />
 
-        <div className="relative mx-auto -translate-y-3 max-w-[1480px] sm:-translate-y-5">
-          <div className="landlord-hero-copy max-w-[1080px]">
-            <h1 className="text-[clamp(3.2rem,6vw,6.8rem)] font-black leading-[0.92] tracking-[-0.055em] !text-white">
+        <div className="landlords-hero-inner relative mx-auto flex max-w-[1480px] flex-col px-4 pb-4 pt-7 sm:block sm:px-8 sm:py-14 lg:px-12 lg:py-16">
+          <div>
+            <p
+              className="landlords-hero-item-in text-[10px] font-black uppercase tracking-[0.18em] text-[#D9E7E2] sm:hidden"
+              style={{ animationDelay: "140ms" }}
+            >
+              Landlord services
+            </p>
+
+            <h1
+              className="landlords-hero-item-in mt-3 max-w-[10ch] text-[3.45rem] font-black leading-[0.86] tracking-[-0.068em] !text-white sm:mt-0 sm:max-w-none sm:text-[clamp(3.2rem,6vw,6.8rem)] sm:leading-[0.92] sm:tracking-[-0.055em]"
+              style={{ animationDelay: "220ms" }}
+            >
               We handle the tenancy.
               <br />
               You keep the control.
             </h1>
 
-            <p className="mt-6 max-w-3xl text-base leading-7 !text-white/72 sm:text-lg sm:leading-8">
-              Choose the level of support that suits you, with the fee and
+            <p
+              className="landlords-hero-item-in mt-4 max-w-[29rem] text-[0.86rem] font-semibold leading-[1.28rem] !text-white/88 sm:mt-6 sm:max-w-3xl sm:text-lg sm:font-medium sm:leading-8 sm:!text-white/76"
+              style={{ animationDelay: "320ms" }}
+            >
+              Choose the support that suits you, with the fee and
               responsibilities explained clearly before anything begins.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-px border border-white/18 bg-white/18 md:grid-cols-3">
-            {heroCards.map((card, index) => (
-              <article
-                key={card.label}
-                className="landlord-hero-card flex min-h-[205px] flex-col justify-between bg-white p-6 text-[#17383C] sm:p-7"
-                style={{ animationDelay: `${230 + index * 90}ms` }}
+          <div className="mt-auto sm:mt-10">
+            <div
+              className="landlords-hero-item-in grid grid-cols-3 gap-2 sm:gap-px sm:border sm:border-white/18 sm:bg-white/18"
+              style={{ animationDelay: "430ms" }}
+            >
+              {heroCards.map((card) => (
+                <article
+                  key={card.label}
+                  className="landlords-hero-card flex min-w-0 flex-col justify-between overflow-hidden border border-white/35 bg-white p-2.5 text-[#17383C] shadow-[0_8px_20px_rgba(0,0,0,0.16)] sm:border-0 sm:p-7 sm:shadow-none"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-[8px] font-black uppercase tracking-[0.09em] text-[#527875] sm:text-[10px] sm:tracking-[0.13em]">
+                      {card.label}
+                    </p>
+
+                    <p className="mt-2 break-words text-[0.96rem] font-black leading-[0.94] tracking-[-0.04em] sm:mt-3 sm:text-[clamp(2rem,3vw,3.1rem)]">
+                      {card.value}
+                    </p>
+                  </div>
+
+                  <p className="overflow-hidden text-[0.52rem] font-bold leading-[0.69rem] text-[#17383C]/72 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3] sm:mt-6 sm:block sm:text-sm sm:font-semibold sm:leading-6 sm:text-[#17383C]/62">
+                    {card.text}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <div
+              className="landlords-hero-item-in mt-3 grid grid-cols-2 gap-2.5 sm:mt-8 sm:flex sm:gap-3"
+              style={{ animationDelay: "540ms" }}
+            >
+              <a
+                href="#rental-valuation"
+                style={{ color: "#ffffff" }}
+                className="group flex min-h-[3.25rem] items-center justify-between gap-2 bg-[#17383C] px-3 text-[0.7rem] font-black !text-white shadow-[0_8px_22px_rgba(0,0,0,0.18)] visited:!text-white sm:inline-flex sm:px-6 sm:text-base"
               >
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.13em] text-[#6B908D]">
-                    {card.label}
-                  </p>
+                <span style={{ color: "#ffffff" }}>Book a valuation</span>
+                <ArrowIcon />
+              </a>
 
-                  <p className="mt-3 text-[clamp(2rem,3vw,3.1rem)] font-black tracking-[-0.045em]">
-                    {card.value}
-                  </p>
-                </div>
-
-                <p className="mt-6 max-w-sm text-sm leading-6 text-[#17383C]/52">
-                  {card.text}
-                </p>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#rental-valuation"
-              className="landlord-hero-action group inline-flex min-h-13 items-center justify-center gap-3 border border-[#AFC7C0] bg-[#BFD3CD] px-6 py-3 font-black !text-[#17383C] transition duration-200 hover:border-white hover:bg-white"
-              style={{ animationDelay: "580ms" }}
-            >
-              Book a rental valuation
-              <ArrowIcon />
-            </a>
-
-            <a
-              href="#managed"
-              className="landlord-hero-action group inline-flex min-h-13 items-center justify-center gap-3 border border-white/55 bg-[#0D2529]/45 px-6 py-3 font-black !text-white backdrop-blur-sm transition duration-200 hover:border-[#BFD3CD] hover:bg-[#BFD3CD] hover:!text-[#17383C]"
-              style={{ animationDelay: "670ms" }}
-            >
-              <span className="!text-white group-hover:!text-[#17383C]">
-                See landlord services
-              </span>
-              <ArrowIcon />
-            </a>
+              <a
+                href="#managed"
+                style={{ color: "#17383C" }}
+                className="group flex min-h-[3.25rem] items-center justify-between gap-2 border border-[#BFD3CD] bg-[#BFD3CD] px-3 text-[0.7rem] font-black !text-[#17383C] shadow-[0_8px_22px_rgba(0,0,0,0.14)] visited:!text-[#17383C] sm:inline-flex sm:px-6 sm:text-base"
+              >
+                <span style={{ color: "#17383C" }}>Landlord services</span>
+                <ArrowIcon />
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -395,13 +747,13 @@ export default function LandlordsPage() {
 
       <section
         id="landlord-enquiry"
-        className="scroll-mt-28 border-y border-white/10 bg-[#17383C] px-5 py-12 text-white sm:px-8 sm:py-14 lg:px-12"
+        className="scroll-mt-28 border-y border-white/10 bg-[#EAF0ED] px-3 py-5 text-white sm:bg-[#17383C] sm:px-8 sm:py-14 lg:px-12"
       >
         <div
           data-landlord-reveal
-          className="landlord-reveal mx-auto grid max-w-[1480px] items-stretch gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-12"
+          className="landlord-reveal mx-auto grid max-w-[1480px] items-stretch gap-0 sm:gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-12"
         >
-          <div className="flex h-full flex-col pt-1">
+          <div className="hidden h-full flex-col pt-1 sm:flex">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#BFD3CD]">
               Landlord enquiry
             </p>
@@ -450,67 +802,67 @@ export default function LandlordsPage() {
 
           <form
             onSubmit={enquiryForm.handleSubmit}
-            className="relative h-full bg-white p-6 shadow-[0_18px_45px_rgba(23,56,60,0.08)] sm:p-8 lg:p-9"
+            className="relative h-full bg-[#17383C] p-4 text-white shadow-[0_18px_45px_rgba(23,56,60,0.12)] sm:bg-white sm:p-8 sm:text-[#17383C] lg:p-9"
           >
             <input type="hidden" name="botField" value="" readOnly />
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:gap-5">
               <label>
-                <span className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-[#6B908D]">
+                <span className="mb-1.5 block text-[0.68rem] font-black uppercase tracking-[0.08em] text-white/74 sm:mb-2 sm:text-xs sm:tracking-[0.12em] sm:text-[#6B908D]">
                   Full name
                 </span>
                 <input
                   required
                   name="name"
                   type="text"
-                  className="min-h-13 w-full border border-[#17383C]/16 px-4 outline-none focus:border-[#17383C] bg-white text-[#17383C]"
+                  className="h-[3.25rem] min-h-[3.25rem] w-full min-w-0 rounded-none border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:border-[#17383C]/16 sm:px-4 sm:text-sm sm:focus:border-[#17383C]"
                 />
               </label>
 
               <label>
-                <span className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-[#6B908D]">
+                <span className="mb-1.5 block text-[0.68rem] font-black uppercase tracking-[0.08em] text-white/74 sm:mb-2 sm:text-xs sm:tracking-[0.12em] sm:text-[#6B908D]">
                   Phone number
                 </span>
                 <input
                   required
                   name="phone"
                   type="tel"
-                  className="min-h-13 w-full border border-[#17383C]/16 px-4 outline-none focus:border-[#17383C] bg-white text-[#17383C]"
+                  className="h-[3.25rem] min-h-[3.25rem] w-full min-w-0 rounded-none border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:border-[#17383C]/16 sm:px-4 sm:text-sm sm:focus:border-[#17383C]"
                 />
               </label>
 
               <label>
-                <span className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-[#6B908D]">
+                <span className="mb-1.5 block text-[0.68rem] font-black uppercase tracking-[0.08em] text-white/74 sm:mb-2 sm:text-xs sm:tracking-[0.12em] sm:text-[#6B908D]">
                   Email address
                 </span>
                 <input
                   required
                   name="email"
                   type="email"
-                  className="min-h-13 w-full border border-[#17383C]/16 px-4 outline-none focus:border-[#17383C] bg-white text-[#17383C]"
+                  className="h-[3.25rem] min-h-[3.25rem] w-full min-w-0 rounded-none border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:border-[#17383C]/16 sm:px-4 sm:text-sm sm:focus:border-[#17383C]"
                 />
               </label>
 
               <label>
-                <span className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-[#6B908D]">
+                <span className="mb-1.5 block text-[0.68rem] font-black uppercase tracking-[0.08em] text-white/74 sm:mb-2 sm:text-xs sm:tracking-[0.12em] sm:text-[#6B908D]">
                   Property postcode
                 </span>
                 <input
                   required
                   name="postcode"
                   type="text"
-                  className="min-h-13 w-full border border-[#17383C]/16 px-4 outline-none focus:border-[#17383C] bg-white text-[#17383C]"
+                  className="h-[3.25rem] min-h-[3.25rem] w-full min-w-0 rounded-none border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:border-[#17383C]/16 sm:px-4 sm:text-sm sm:focus:border-[#17383C]"
                 />
               </label>
 
-              <label className="sm:col-span-2">
-                <span className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-[#6B908D]">
+              <label className="col-span-2">
+                <span className="mb-1.5 block text-[0.68rem] font-black uppercase tracking-[0.08em] text-white/74 sm:mb-2 sm:text-xs sm:tracking-[0.12em] sm:text-[#6B908D]">
                   Service required
                 </span>
                 <select
                   required
                   name="service"
                   defaultValue=""
-                  className="min-h-13 w-full border border-[#17383C]/16 bg-white px-4 outline-none focus:border-[#17383C] text-[#17383C]"
+                  className="h-[3.25rem] min-h-[3.25rem] w-full appearance-none rounded-none border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:border-[#17383C]/16 sm:px-4 sm:text-sm sm:focus:border-[#17383C]"
                 >
                   <option value="" disabled>
                     Choose a service
@@ -522,15 +874,15 @@ export default function LandlordsPage() {
                 </select>
               </label>
 
-              <label className="sm:col-span-2">
-                <span className="mb-2 block text-xs font-black uppercase tracking-[0.12em] text-[#6B908D]">
+              <label className="col-span-2">
+                <span className="mb-1.5 block text-[0.68rem] font-black uppercase tracking-[0.08em] text-white/74 sm:mb-2 sm:text-xs sm:tracking-[0.12em] sm:text-[#6B908D]">
                   Property details
                 </span>
                 <textarea
                   name="message"
-                  rows={4}
+                  rows={2}
                   placeholder="Property type, current tenancy position or preferred timing..."
-                  className="w-full resize-y border border-[#17383C]/16 bg-white px-4 py-3 text-[#17383C] outline-none placeholder:text-[#17383C]/34 focus:border-[#17383C]"
+                  className="w-full resize-y rounded-none border border-white/24 bg-white px-3 py-3 text-base leading-5 text-[#17383C] outline-none placeholder:text-[#17383C]/34 focus:border-[#BFD3CD] sm:border-[#17383C]/16 sm:px-4 sm:text-sm sm:leading-6 sm:focus:border-[#17383C]"
                 />
               </label>
             </div>
@@ -538,7 +890,7 @@ export default function LandlordsPage() {
             <button
               type="submit"
               disabled={enquiryForm.isSending}
-              className="mt-6 inline-flex min-h-13 items-center justify-center gap-3 bg-[#17383C] px-7 font-black !text-white transition hover:bg-[#2D5B5D] disabled:cursor-wait disabled:opacity-65"
+              className="mt-5 inline-flex min-h-[3.25rem] w-full items-center justify-center gap-3 bg-[#BFD3CD] px-5 text-sm font-black !text-[#17383C] transition hover:bg-white disabled:cursor-wait disabled:opacity-65 sm:mt-6 sm:w-auto sm:bg-[#17383C] sm:px-7 sm:!text-white sm:hover:bg-[#2D5B5D]"
             >
               {enquiryForm.isSending
                 ? "Sending enquiry..."
@@ -567,13 +919,115 @@ export default function LandlordsPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <LandlordsMobileFooter
+        onOpenCookiePreferences={() => setCookieNoticeOpen(true)}
+      />
+
+      <div className="hidden sm:block">
+        <SiteFooter />
+      </div>
+
+      {cookieNoticeOpen && (
+        <aside className="fixed bottom-4 left-4 right-4 z-[1050] border border-[#17383C]/14 bg-white p-4 shadow-[0_20px_60px_rgba(13,37,41,0.24)] sm:hidden">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
+                Cookie preferences
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[#17383C]/62">
+                Essential cookies keep the site working. Optional cookies help
+                us understand how it is used.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setCookieNoticeOpen(false)}
+              aria-label="Close cookie notice"
+              className="text-2xl leading-none text-[#17383C]/48"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => saveCookiePreference("all")}
+              className="min-h-11 bg-[#17383C] px-3 text-sm font-black text-white"
+            >
+              Accept all
+            </button>
+
+            <button
+              type="button"
+              onClick={() => saveCookiePreference("essential")}
+              className="min-h-11 border border-[#17383C]/24 px-3 text-sm font-black text-[#17383C]"
+            >
+              Essential only
+            </button>
+          </div>
+        </aside>
+      )}
 
       <style>{`
-        @keyframes heroCopyIn {
+        .landlords-hero {
+          margin-top: 5.1rem;
+          min-height: calc(100svh - 5.1rem);
+        }
+
+        .landlords-hero-inner {
+          min-height: calc(100svh - 5.1rem);
+        }
+
+        .landlords-hero-card {
+          height: 108px;
+        }
+
+        @media (min-width: 640px) {
+          .landlords-hero {
+            margin-top: 0;
+            min-height: 0;
+          }
+
+          .landlords-hero-inner {
+            min-height: 0;
+          }
+
+          .landlords-hero-card {
+            height: auto;
+            min-height: 205px;
+          }
+        }
+
+        @keyframes landlordsMobileDrawerIn {
+          from {
+            transform: translate3d(100%, 0, 0);
+          }
+          to {
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .landlords-mobile-drawer-in {
+          animation: landlordsMobileDrawerIn 300ms cubic-bezier(.22,1,.36,1) both;
+        }
+
+        @keyframes landlordsHeroImageIn {
           from {
             opacity: 0;
-            transform: translate3d(-38px, 14px, 0);
+            transform: scale(1.055);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes landlordsHeroItemIn {
+          from {
+            opacity: 0;
+            transform: translate3d(0, 24px, 0);
           }
           to {
             opacity: 1;
@@ -581,26 +1035,15 @@ export default function LandlordsPage() {
           }
         }
 
-        @keyframes heroItemIn {
-          from {
-            opacity: 0;
-            transform: translate3d(0, 22px, 0);
-          }
-          to {
-            opacity: 1;
-            transform: translate3d(0, 0, 0);
-          }
+        .landlords-hero-image-in {
+          animation: landlordsHeroImageIn 1100ms cubic-bezier(.22,1,.36,1) both;
+          will-change: opacity, transform;
         }
 
-        .landlord-hero-copy {
+        .landlords-hero-item-in {
           opacity: 0;
-          animation: heroCopyIn 700ms cubic-bezier(.22,1,.36,1) 70ms both;
-        }
-
-        .landlord-hero-card,
-        .landlord-hero-action {
-          opacity: 0;
-          animation: heroItemIn 560ms cubic-bezier(.22,1,.36,1) both;
+          animation: landlordsHeroItemIn 760ms cubic-bezier(.22,1,.36,1) both;
+          will-change: opacity, transform;
         }
 
         .landlord-reveal {
@@ -638,9 +1081,8 @@ export default function LandlordsPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .landlord-hero-copy,
-          .landlord-hero-card,
-          .landlord-hero-action,
+          .landlords-hero-image-in,
+          .landlords-hero-item-in,
           .landlord-reveal,
           .landlord-item {
             opacity: 1;

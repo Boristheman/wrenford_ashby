@@ -268,24 +268,22 @@ function SellMobileDrawer({
   open: boolean;
   onClose: () => void;
 }) {
+  if (!open) {
+    return null;
+  }
+
   return (
     <>
       <button
         type="button"
         aria-label="Close menu overlay"
         onClick={onClose}
-        className={`fixed inset-0 z-[1090] bg-[#061719]/62 backdrop-blur-[1px] transition-opacity duration-300 sm:hidden ${
-          open
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
+        className="fixed inset-0 z-[1090] bg-[#061719]/62 backdrop-blur-[1px] sm:hidden"
       />
 
       <aside
         aria-hidden={!open}
-        className={`fixed bottom-0 right-0 top-0 z-[1100] flex w-[min(82vw,22rem)] max-w-full flex-col overflow-hidden bg-white text-[#17383C] shadow-[-24px_0_64px_rgba(0,0,0,0.22)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] sm:hidden ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        className="sell-mobile-drawer-in fixed bottom-0 right-0 top-0 z-[1100] flex w-[min(82vw,22rem)] max-w-full flex-col overflow-hidden bg-white text-[#17383C] shadow-[-24px_0_64px_rgba(0,0,0,0.22)] sm:hidden"
       >
         <div className="flex min-h-[5rem] shrink-0 items-center justify-between border-b border-[#17383C]/8 px-5 pt-[env(safe-area-inset-top)]">
           <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6B908D]">
@@ -351,14 +349,6 @@ export default function SellPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileMenuOpen]);
-
-  useEffect(() => {
     const items = Array.from(
       document.querySelectorAll<HTMLElement>("[data-sell-reveal]"),
     );
@@ -395,7 +385,7 @@ export default function SellPage() {
   }, []);
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
+    <main className="min-h-screen w-full max-w-full overflow-x-clip bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
       <style>{`
         .sell-hero {
           margin-top: 5.1rem;
@@ -424,6 +414,19 @@ export default function SellPage() {
             height: auto;
             min-height: 210px;
           }
+        }
+
+        @keyframes sellMobileDrawerIn {
+          from {
+            transform: translate3d(100%, 0, 0);
+          }
+          to {
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .sell-mobile-drawer-in {
+          animation: sellMobileDrawerIn 300ms cubic-bezier(.22,1,.36,1) both;
         }
 
         @keyframes sellHeroImageIn {
@@ -502,12 +505,13 @@ export default function SellPage() {
 
       <section
         id="selling-fees"
-        className="sell-hero relative scroll-mt-28 overflow-hidden bg-[#0D2529] text-white"
+        className="sell-hero relative scroll-mt-28 overflow-x-clip overflow-y-visible bg-[#0D2529] text-white"
       >
         <img
           src="/graphics/hero/london.png"
           alt="Homes across Essex"
-          className="sell-hero-image-in absolute inset-0 h-full w-full object-cover object-center"
+          draggable={false}
+          className="sell-hero-image-in pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-center"
         />
         <div className="absolute inset-0 bg-[#071C20]/10 sm:bg-[#071C20]/28" />
         <div className="absolute inset-x-0 top-0 h-[55%] bg-gradient-to-b from-[#071C20]/76 via-[#071C20]/24 to-transparent sm:hidden" />
@@ -641,7 +645,7 @@ export default function SellPage() {
 
       <section
         id="book-valuation"
-        className="scroll-mt-28 bg-[#EAF0ED] px-3 py-6 sm:px-8 sm:py-16 lg:px-12"
+        className="scroll-mt-28 bg-[#EAF0ED] px-3 py-5 sm:px-8 sm:py-16 lg:px-12"
       >
         <div className="mx-auto grid max-w-[1480px] items-stretch gap-0 sm:gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:gap-12">
           <div
@@ -721,27 +725,13 @@ export default function SellPage() {
                     Arrange your valuation
                   </h3>
                   <p className="mt-2 text-[0.82rem] leading-5 text-white/58 sm:mt-3 sm:text-sm sm:leading-6">
-                    Add the basic details below. We will confirm the appointment
-                    by phone or email.
+                    Add the details below and we will confirm the appointment.
                   </p>
                 </div>
 
-                <div className="mt-5 grid gap-4 sm:mt-6 sm:grid-cols-2 sm:gap-5">
-                  <label className="sm:col-span-2">
-                    <span className="text-xs font-black text-white/72">
-                      Property postcode *
-                    </span>
-                    <input
-                      required
-                      name="postcode"
-                      type="text"
-                      placeholder="SS12 9AA"
-                      className="mt-1.5 min-h-12 w-full border border-white/24 bg-white px-4 text-base text-[#17383C] outline-none placeholder:text-[#17383C]/32 focus:border-[#BFD3CD] sm:mt-2 sm:min-h-[3.25rem] sm:text-sm"
-                    />
-                  </label>
-
-                  <label>
-                    <span className="text-xs font-black text-white/72">
+                <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-4 sm:mt-6 sm:gap-5">
+                  <label className="min-w-0">
+                    <span className="text-[0.68rem] font-black leading-4 text-white/72 sm:text-xs">
                       Full name *
                     </span>
                     <input
@@ -749,12 +739,12 @@ export default function SellPage() {
                       name="name"
                       type="text"
                       autoComplete="name"
-                      className="mt-1.5 min-h-12 w-full border border-white/24 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:min-h-[3.25rem] sm:text-sm"
+                      className="mt-1 min-h-[3.25rem] w-full min-w-0 border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:px-4 sm:text-sm"
                     />
                   </label>
 
-                  <label>
-                    <span className="text-xs font-black text-white/72">
+                  <label className="min-w-0">
+                    <span className="text-[0.68rem] font-black leading-4 text-white/72 sm:text-xs">
                       Telephone *
                     </span>
                     <input
@@ -762,12 +752,12 @@ export default function SellPage() {
                       name="telephone"
                       type="tel"
                       autoComplete="tel"
-                      className="mt-1.5 min-h-12 w-full border border-white/24 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:min-h-[3.25rem] sm:text-sm"
+                      className="mt-1 min-h-[3.25rem] w-full min-w-0 border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:px-4 sm:text-sm"
                     />
                   </label>
 
-                  <label>
-                    <span className="text-xs font-black text-white/72">
+                  <label className="min-w-0">
+                    <span className="text-[0.68rem] font-black leading-4 text-white/72 sm:text-xs">
                       Email address *
                     </span>
                     <input
@@ -775,18 +765,31 @@ export default function SellPage() {
                       name="email"
                       type="email"
                       autoComplete="email"
-                      className="mt-1.5 min-h-12 w-full border border-white/24 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:min-h-[3.25rem] sm:text-sm"
+                      className="mt-1 min-h-[3.25rem] w-full min-w-0 border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:px-4 sm:text-sm"
                     />
                   </label>
 
-                  <label>
-                    <span className="text-xs font-black text-white/72">
+                  <label className="min-w-0">
+                    <span className="text-[0.68rem] font-black leading-4 text-white/72 sm:text-xs">
+                      Postcode *
+                    </span>
+                    <input
+                      required
+                      name="postcode"
+                      type="text"
+                      placeholder="SS12 9AA"
+                      className="mt-1 min-h-[3.25rem] w-full min-w-0 border border-white/24 bg-white px-3 text-base uppercase text-[#17383C] outline-none placeholder:text-[#17383C]/32 focus:border-[#BFD3CD] sm:mt-2 sm:px-4 sm:text-sm"
+                    />
+                  </label>
+
+                  <label className="col-span-2">
+                    <span className="text-[0.68rem] font-black leading-4 text-white/72 sm:text-xs">
                       When are you hoping to move?
                     </span>
                     <select
                       name="timescale"
                       defaultValue=""
-                      className="mt-1.5 min-h-12 w-full border border-white/24 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:min-h-[3.25rem] sm:text-sm"
+                      className="mt-1 min-h-[3.25rem] w-full border border-white/24 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD] sm:mt-2 sm:px-4 sm:text-sm"
                     >
                       <option value="">Select a timescale</option>
                       <option>As soon as possible</option>
@@ -796,20 +799,20 @@ export default function SellPage() {
                     </select>
                   </label>
 
-                  <label className="sm:col-span-2">
-                    <span className="text-xs font-black text-white/72">
+                  <label className="col-span-2">
+                    <span className="text-[0.68rem] font-black leading-4 text-white/72 sm:text-xs">
                       Property address or useful details
                     </span>
                     <textarea
                       name="details"
-                      rows={3}
+                      rows={2}
                       placeholder="Add the address, property type or anything useful for the valuation."
-                      className="mt-1.5 w-full resize-y border border-white/24 bg-white px-4 py-3 text-base leading-6 text-[#17383C] outline-none placeholder:text-[#17383C]/32 focus:border-[#BFD3CD] sm:mt-2 sm:py-4 sm:text-sm"
+                      className="mt-1 w-full resize-y border border-white/24 bg-white px-3 py-2.5 text-base leading-5 text-[#17383C] outline-none placeholder:text-[#17383C]/32 focus:border-[#BFD3CD] sm:mt-2 sm:px-4 sm:py-4 sm:text-sm sm:leading-6"
                     />
                   </label>
                 </div>
 
-                <label className="mt-4 flex items-start gap-3 text-[0.7rem] leading-4 text-white/58 sm:mt-5 sm:text-xs sm:leading-5">
+                <label className="mt-3 flex items-start gap-2.5 text-[0.68rem] leading-4 text-white/58 sm:mt-5 sm:gap-3 sm:text-xs sm:leading-5">
                   <input
                     required
                     type="checkbox"
@@ -825,7 +828,7 @@ export default function SellPage() {
                 <button
                   type="submit"
                   disabled={valuationForm.isSending}
-                  className="mt-5 flex min-h-[3.25rem] w-full items-center justify-center gap-3 bg-[#BFD3CD] px-5 py-3.5 text-sm font-black !text-[#17383C] disabled:cursor-wait disabled:opacity-65 sm:mt-7 sm:min-h-14 sm:px-6 sm:py-4 sm:text-base"
+                  className="mt-4 flex min-h-[3.15rem] w-full items-center justify-center gap-3 bg-[#BFD3CD] px-5 py-3 text-sm font-black !text-[#17383C] disabled:cursor-wait disabled:opacity-65 sm:mt-7 sm:min-h-14 sm:px-6 sm:py-4 sm:text-base"
                 >
                   {valuationForm.isSending
                     ? "Sending request..."

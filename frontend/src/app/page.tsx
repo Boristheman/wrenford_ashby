@@ -1925,21 +1925,8 @@ function DesktopHome() {
                     value=""
                     readOnly
                   />
-                  <div className="wa-valuation-form-grid grid gap-4 sm:grid-cols-2">
-                    <label className="sm:col-span-2">
-                      <span className="text-xs font-black text-white/70">
-                        Property postcode
-                      </span>
-                      <input
-                        required
-                        name="postcode"
-                        type="text"
-                        placeholder="SS12 9AA"
-                        className="mt-1.5 min-h-12 w-full border border-white/16 bg-white px-4 text-base text-[#17383C] outline-none placeholder:text-[#17383C]/28 focus:border-[#BFD3CD]"
-                      />
-                    </label>
-
-                    <label>
+                  <div className="wa-valuation-form-grid grid grid-cols-2 gap-x-4 gap-y-4">
+                    <label className="min-w-0">
                       <span className="text-xs font-black text-white/70">
                         Full name
                       </span>
@@ -1947,11 +1934,12 @@ function DesktopHome() {
                         required
                         name="name"
                         type="text"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        autoComplete="name"
+                        className="mt-2 min-h-12 w-full min-w-0 border border-white/16 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </label>
 
-                    <label>
+                    <label className="min-w-0">
                       <span className="text-xs font-black text-white/70">
                         Telephone
                       </span>
@@ -1959,11 +1947,12 @@ function DesktopHome() {
                         required
                         name="telephone"
                         type="tel"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        autoComplete="tel"
+                        className="mt-2 min-h-12 w-full min-w-0 border border-white/16 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </label>
 
-                    <label>
+                    <label className="min-w-0">
                       <span className="text-xs font-black text-white/70">
                         Email address
                       </span>
@@ -1971,11 +1960,26 @@ function DesktopHome() {
                         required
                         name="email"
                         type="email"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        autoComplete="email"
+                        className="mt-2 min-h-12 w-full min-w-0 border border-white/16 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </label>
 
-                    <label>
+                    <label className="min-w-0">
+                      <span className="text-xs font-black text-white/70">
+                        Postcode
+                      </span>
+                      <input
+                        required
+                        name="postcode"
+                        type="text"
+                        autoComplete="postal-code"
+                        placeholder="SS12 9AA"
+                        className="mt-2 min-h-12 w-full min-w-0 border border-white/16 bg-white px-4 text-base uppercase text-[#17383C] outline-none placeholder:text-[#17383C]/28 focus:border-[#BFD3CD]"
+                      />
+                    </label>
+
+                    <label className="col-span-2">
                       <span className="text-xs font-black text-white/70">
                         I am looking to
                       </span>
@@ -1983,7 +1987,7 @@ function DesktopHome() {
                         required
                         name="valuationType"
                         defaultValue=""
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       >
                         <option value="" disabled>
                           Select an option
@@ -3188,7 +3192,7 @@ function MobileHome() {
           </MobileReveal>
 
           <MobileReveal>
-            <div className="mt-6 border border-[#0D2529] bg-[#0D2529] p-4 text-white shadow-[0_18px_42px_rgba(13,37,41,0.14)]">
+            <div className="mt-5 border border-[#0D2529] bg-[#0D2529] p-4 text-white shadow-[0_18px_42px_rgba(13,37,41,0.14)]">
               {valuationForm.status === "success" ? (
                 <div className="py-8">
                   <h3 className="text-2xl font-black leading-tight">
@@ -3206,53 +3210,54 @@ function MobileHome() {
                 <form onSubmit={valuationForm.handleSubmit}>
                   <input type="hidden" name="botField" value="" readOnly />
 
-                  <div className="grid gap-3.5">
-                    <MobileField label="Property postcode">
-                      <input
-                        required
-                        name="postcode"
-                        type="text"
-                        placeholder="SS12 9AA"
-                        className="mt-1.5 min-h-12 w-full border border-white/16 bg-white px-4 text-base text-[#17383C] outline-none placeholder:text-[#17383C]/28 focus:border-[#BFD3CD]"
-                      />
-                    </MobileField>
-
-                    <MobileField label="Full name">
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-4">
+                    <MobileField label="Full name" className="min-w-0">
                       <input
                         required
                         name="name"
                         type="text"
                         autoComplete="name"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        className="mt-1.5 min-h-[3.25rem] w-full min-w-0 border border-white/16 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </MobileField>
 
-                    <MobileField label="Telephone">
+                    <MobileField label="Telephone" className="min-w-0">
                       <input
                         required
                         name="telephone"
                         type="tel"
                         autoComplete="tel"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        className="mt-1.5 min-h-[3.25rem] w-full min-w-0 border border-white/16 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </MobileField>
 
-                    <MobileField label="Email address">
+                    <MobileField label="Email address" className="min-w-0">
                       <input
                         required
                         name="email"
                         type="email"
                         autoComplete="email"
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        className="mt-1.5 min-h-[3.25rem] w-full min-w-0 border border-white/16 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       />
                     </MobileField>
 
-                    <MobileField label="I am looking to">
+                    <MobileField label="Postcode" className="min-w-0">
+                      <input
+                        required
+                        name="postcode"
+                        type="text"
+                        autoComplete="postal-code"
+                        placeholder="SS12 9AA"
+                        className="mt-1.5 min-h-[3.25rem] w-full min-w-0 border border-white/16 bg-white px-3 text-base uppercase text-[#17383C] outline-none placeholder:text-[#17383C]/28 focus:border-[#BFD3CD]"
+                      />
+                    </MobileField>
+
+                    <MobileField label="I am looking to" className="col-span-2">
                       <select
                         required
                         name="valuationType"
                         defaultValue=""
-                        className="mt-2 min-h-12 w-full border border-white/16 bg-white px-4 text-[#17383C] outline-none focus:border-[#BFD3CD]"
+                        className="mt-1.5 min-h-[3.25rem] w-full border border-white/16 bg-white px-3 text-base text-[#17383C] outline-none focus:border-[#BFD3CD]"
                       >
                         <option value="" disabled>
                           Select an option
@@ -3267,7 +3272,7 @@ function MobileHome() {
                   <button
                     type="submit"
                     disabled={valuationForm.isSending}
-                    className="mt-4 flex min-h-13 w-full items-center justify-center gap-3 bg-[#BFD3CD] px-5 py-3.5 text-sm font-black text-[#17383C] disabled:cursor-wait disabled:opacity-60"
+                    className="mt-5 flex min-h-[3.25rem] w-full items-center justify-center gap-3 bg-[#BFD3CD] px-5 py-3.5 text-sm font-black text-[#17383C] disabled:cursor-wait disabled:opacity-60"
                   >
                     {valuationForm.isSending
                       ? "Sending request..."
@@ -3541,13 +3546,17 @@ function MobilePropertyCard({ property }: { property: MobileProperty }) {
 function MobileField({
   label,
   children,
+  className = "",
 }: {
   label: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <label className="block">
-      <span className="text-xs font-black text-white/70">{label}</span>
+    <label className={`block ${className}`}>
+      <span className="text-[0.7rem] font-black leading-4 text-white/74">
+        {label}
+      </span>
       {children}
     </label>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import SiteFooter from "../__components/SiteFooter";
 import SiteHeader from "../__components/SiteHeader";
 
@@ -79,6 +79,612 @@ const certificationsGained = teamMembers.reduce(
   0,
 );
 
+const aboutMobileNavItems = [
+  { label: "Home", href: "/" },
+  { label: "Buy", href: "/buy" },
+  { label: "Rent", href: "/rent" },
+  { label: "Sell", href: "/sell" },
+  { label: "New Homes", href: "/new-homes" },
+  { label: "Landlords", href: "/landlords" },
+  { label: "About", href: "/about" },
+  { label: "News", href: "/news" },
+];
+
+function AboutArrowIcon({
+  className = "h-4 w-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M5 12h13M13 6l6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function AboutPhoneIcon({
+  className = "h-4 w-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M8.2 3.8 10 8.2 7.8 9.6a14 14 0 0 0 6.6 6.6l1.4-2.2 4.4 1.8v3a2 2 0 0 1-2 2C9.9 20.8 3.2 14.1 3.2 5.8a2 2 0 0 1 2-2h3Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function AboutMailIcon({
+  className = "h-4 w-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M3.5 6.5h17v11h-17v-11Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m4.5 7.5 7.5 6 7.5-6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function AboutCookieIcon({
+  className = "h-7 w-7",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+    >
+      <path
+        d="M39 23.5A15.5 15.5 0 1 1 24.5 9c.4 4.6 4.1 8.3 8.7 8.7.2 3.1 2.7 5.6 5.8 5.8Z"
+        fill="currentColor"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <circle cx="19" cy="18" r="2.2" fill="#17383C" />
+      <circle cx="16" cy="28" r="2.4" fill="#17383C" />
+      <circle cx="27" cy="29" r="2.1" fill="#17383C" />
+      <circle cx="25" cy="20" r="1.8" fill="#17383C" />
+    </svg>
+  );
+}
+
+function AboutMobileHeader({
+  menuOpen,
+  onOpen,
+}: {
+  menuOpen: boolean;
+  onOpen: () => void;
+}) {
+  return (
+    <header className="fixed inset-x-0 top-0 z-[1000] border-b border-[#17383C]/12 bg-white text-[#17383C] shadow-[0_10px_28px_rgba(13,37,41,0.12)] sm:hidden">
+      <div className="grid h-[5.1rem] grid-cols-[1fr_auto] items-center gap-3 px-4">
+        <a href="/" aria-label="Wrenford Ashby home" className="min-w-0">
+          <img
+            src="/graphics/logos/wa.png"
+            alt="Wrenford Ashby"
+            draggable={false}
+            className="-ml-1 h-[4.25rem] w-auto max-w-[17rem] origin-left scale-[1.25] object-contain object-left"
+          />
+        </a>
+
+        <div className="flex items-center gap-2">
+          <a
+            href="tel:01268000000"
+            aria-label="Call Wrenford Ashby"
+            className="flex h-10 items-center gap-2 px-1 text-[0.73rem] font-black tracking-[0.01em] text-[#17383C]"
+          >
+            <AboutPhoneIcon className="h-4 w-4" />
+            <span className="hidden min-[390px]:inline">01268 000 000</span>
+          </a>
+
+          <button
+            type="button"
+            aria-label="Open navigation"
+            aria-expanded={menuOpen}
+            onClick={onOpen}
+            className="flex h-11 w-10 items-center justify-end"
+          >
+            <span className="relative block h-[18px] w-7">
+              <span className="absolute left-0 top-0 h-[2px] w-7 bg-current" />
+              <span className="absolute left-0 top-2 h-[2px] w-7 bg-current" />
+              <span className="absolute left-0 top-4 h-[2px] w-7 bg-current" />
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function AboutMobileDrawer({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Close menu overlay"
+        onClick={onClose}
+        className="fixed inset-0 z-[1090] bg-[#061719]/62 backdrop-blur-[1px] sm:hidden"
+      />
+
+      <aside className="about-mobile-drawer-in fixed bottom-0 right-0 top-0 z-[1100] flex w-[min(82vw,22rem)] max-w-full flex-col overflow-hidden bg-white text-[#17383C] shadow-[-24px_0_64px_rgba(0,0,0,0.22)] sm:hidden">
+        <div className="flex min-h-[5rem] shrink-0 items-center justify-between border-b border-[#17383C]/8 px-5 pt-[env(safe-area-inset-top)]">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6B908D]">
+            Navigation
+          </p>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-11 w-11 items-center justify-end"
+            aria-label="Close navigation"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              aria-hidden="true"
+              className="h-6 w-6"
+            >
+              <path d="M6 6l12 12" />
+              <path d="M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+
+        <nav
+          className="min-h-0 flex-1 overflow-y-auto px-5 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          aria-label="Mobile navigation"
+        >
+          {aboutMobileNavItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={onClose}
+              className="group flex min-h-[3.45rem] items-center justify-between gap-4 border-b border-[#17383C]/8 text-[0.98rem] font-bold tracking-[-0.012em] active:opacity-50"
+            >
+              <span>{item.label}</span>
+              <AboutArrowIcon className="h-3.5 w-3.5 text-[#6B908D]" />
+            </a>
+          ))}
+        </nav>
+
+        <div className="shrink-0 border-t border-[#17383C]/8 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+          <a
+            href="/contact"
+            onClick={onClose}
+            style={{ color: "#ffffff" }}
+            className="flex min-h-14 items-center justify-between bg-[#17383C] px-5 text-sm font-black !text-white visited:!text-white"
+          >
+            <span style={{ color: "#ffffff" }}>Contact us</span>
+            <AboutArrowIcon className="h-4 w-4 text-white" />
+          </a>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+function AboutMobileReveal({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+
+    if (!node) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reducedMotion) {
+      setVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+
+        setVisible(true);
+        observer.disconnect();
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -7% 0px",
+      },
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-[opacity,transform] duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        visible
+          ? "translate-y-0 opacity-100"
+          : "translate-y-7 opacity-0"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function AboutMobileStats() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+
+    if (!node) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reducedMotion) {
+      setActive(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+
+        setActive(true);
+        observer.disconnect();
+      },
+      {
+        threshold: 0.18,
+        rootMargin: "0px 0px -7% 0px",
+      },
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`bg-white px-5 py-10 text-[#17383C] transition-[opacity,transform] duration-[950ms] ease-[cubic-bezier(.16,1,.3,1)] ${
+        active
+          ? "translate-y-0 opacity-100"
+          : "translate-y-7 opacity-0"
+      }`}
+    >
+      <div className="mx-auto max-w-[34rem]">
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-[#6B908D]">
+          Local experience
+        </p>
+
+        <h2 className="mt-3 text-[2.45rem] font-black leading-[0.99] tracking-[-0.045em]">
+          Experience behind every move.
+        </h2>
+
+        <p className="mt-4 text-base font-semibold leading-7 text-[#17383C]/62">
+          A local team combining sales, lettings, negotiation, property
+          management and progression experience.
+        </p>
+
+        <div className="mt-7 grid grid-cols-2 gap-3">
+          <article className="flex min-h-[13.5rem] flex-col justify-between bg-[#17383C] p-5 text-white">
+            <div>
+              <p className="text-[0.62rem] font-black uppercase tracking-[0.14em] text-[#BFD3CD]">
+                Combined experience
+              </p>
+
+              <p className="mt-5 text-[3.4rem] font-black leading-none tracking-[-0.07em] !text-white">
+                <CountUp
+                  value={combinedExperience}
+                  active={active}
+                  suffix="+"
+                />
+              </p>
+            </div>
+
+            <p className="mt-5 text-sm font-semibold leading-5 text-white/68">
+              Years across the local team
+            </p>
+          </article>
+
+          <article className="flex min-h-[13.5rem] flex-col justify-between bg-[#BFD3CD] p-5 text-[#17383C]">
+            <div>
+              <p className="text-[0.62rem] font-black uppercase tracking-[0.14em] text-[#17383C]/58">
+                Professional development
+              </p>
+
+              <p className="mt-5 text-[3.4rem] font-black leading-none tracking-[-0.07em]">
+                <CountUp
+                  value={certificationsGained}
+                  active={active}
+                />
+              </p>
+            </div>
+
+            <p className="mt-5 text-sm font-semibold leading-5 text-[#17383C]/64">
+              Certifications gained
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+function AboutMobilePage() {
+  return (
+    <div className="sm:hidden">
+      <div className="h-[5.1rem]" aria-hidden="true" />
+
+      <section className="bg-white px-5 pb-9 pt-12">
+        <div className="mx-auto max-w-[34rem]">
+          <p className="about-mobile-first-in text-xs font-black uppercase tracking-[0.2em] text-[#6B908D]">
+            Meet the team
+          </p>
+
+          <h1 className="about-mobile-second-in mt-4 text-[clamp(3rem,13vw,4.3rem)] font-black leading-[0.95] tracking-[-0.05em] text-[#17383C]">
+            Meet the team behind Wrenford Ashby.
+          </h1>
+
+          <p className="about-mobile-third-in mt-5 text-base font-semibold leading-7 text-[#17383C]/66">
+            We are an independent estate agency rooted in Wickford and South
+            Essex. For 24 years, local people have trusted us to guide their
+            sales, purchases, lettings and moves.
+          </p>
+
+          <p className="about-mobile-fourth-in mt-4 text-base font-semibold leading-7 text-[#17383C]/66">
+            You deal with the same local team from the first call through to
+            completion, with a named person who knows what is happening next.
+          </p>
+
+          <div className="about-mobile-image-in relative mt-7 aspect-[4/3] overflow-hidden bg-[#17383C]">
+            <img
+              src="/graphics/team/full.png"
+              alt="The Wrenford Ashby estate agency team in Wickford"
+              draggable={false}
+              className="h-full w-full object-cover object-center"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#EAF0ED] px-5 py-10 text-[#17383C]">
+        <div className="mx-auto max-w-[34rem]">
+          <AboutMobileReveal>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#6B908D]">
+              The Wrenford Ashby team
+            </p>
+
+            <h2 className="mt-3 text-[2.45rem] font-black leading-[0.99] tracking-[-0.045em]">
+              The people behind every move.
+            </h2>
+
+            <p className="mt-4 text-base font-semibold leading-7 text-[#17383C]/62">
+              Meet the people you will speak to, see at valuations and rely on
+              throughout the sale, purchase or tenancy.
+            </p>
+          </AboutMobileReveal>
+
+          <div className="mt-7 grid gap-4">
+            {teamMembers.map((member, index) => (
+              <AboutMobileReveal key={member.name}>
+                <article className="overflow-hidden border border-[#17383C]/12 bg-white shadow-[0_16px_38px_rgba(23,56,60,0.08)]">
+                  <div className="grid grid-cols-[6.15rem_1fr] items-stretch">
+                    <div className="flex min-h-[7.75rem] items-center justify-center overflow-hidden bg-white p-2.5">
+                      <img
+                        src={member.image}
+                        alt={`${member.name}, ${member.role}`}
+                        draggable={false}
+                        className="h-[5.15rem] w-[5.15rem] shrink-0 object-contain object-center"
+                      />
+                    </div>
+
+                    <div className="flex min-w-0 flex-col justify-center px-4 py-3.5">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-[0.68rem] font-black tracking-[0.16em] text-[#17383C]/34">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="h-px flex-1 bg-[#17383C]/12" />
+                      </div>
+
+                      <h3 className="mt-3 text-2xl font-black tracking-[-0.035em] text-[#17383C]">
+                        {member.name}
+                      </h3>
+
+                      <p className="mt-1 text-[0.68rem] font-black uppercase leading-5 tracking-[0.12em] text-[#6B908D]">
+                        {member.role}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-[#17383C]/10 px-4 py-4">
+                    <p className="text-sm font-semibold leading-6 text-[#17383C]/62">
+                      {member.summary}
+                    </p>
+
+                    <p className="mt-4 border-t border-[#17383C]/8 pt-3 text-[0.66rem] font-black uppercase tracking-[0.11em] text-[#6B908D]">
+                      {member.focus}
+                    </p>
+                  </div>
+                </article>
+              </AboutMobileReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <AboutMobileStats />
+
+      <section className="bg-[#BFD3CD] px-5 py-10 text-[#17383C]">
+        <AboutMobileReveal>
+          <div className="mx-auto max-w-[34rem]">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#17383C]/56">
+              Ready when you are
+            </p>
+
+            <h2 className="mt-3 text-[2.55rem] font-black leading-[0.98] tracking-[-0.045em]">
+              Let&apos;s talk about your property.
+            </h2>
+
+            <p className="mt-4 text-base font-semibold leading-7 text-[#17383C]/62">
+              Speak with the local team about selling, buying, letting or
+              renting across Wickford and South Essex.
+            </p>
+
+            <Link
+              href="/contact"
+              className="mt-6 inline-flex min-h-12 items-center justify-center gap-3 bg-[#17383C] px-7 text-sm font-black !text-white"
+            >
+              Contact us
+              <AboutArrowIcon className="h-4 w-4 text-white" />
+            </Link>
+          </div>
+        </AboutMobileReveal>
+      </section>
+    </div>
+  );
+}
+
+function AboutMobileFooter({
+  onOpenCookiePreferences,
+}: {
+  onOpenCookiePreferences: () => void;
+}) {
+  return (
+    <footer className="bg-[#0D2529] px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-9 text-white sm:hidden">
+      <div className="mx-auto max-w-[34rem]">
+        <a href="/" aria-label="Wrenford Ashby home">
+          <img
+            src="/graphics/logos/wa.png"
+            alt="Wrenford Ashby"
+            draggable={false}
+            className="h-[4.9rem] w-auto max-w-[16rem] object-contain object-left"
+          />
+        </a>
+
+        <p className="mt-2 max-w-[20rem] text-sm leading-6 text-white/52">
+          Independent estate agents for Wickford and the surrounding South Essex
+          area.
+        </p>
+
+        <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-3 border-y border-white/12 py-6 text-sm font-bold text-white/64">
+          <a href="/buy">Buy</a>
+          <a href="/rent">Rent</a>
+          <a href="/sell">Sell</a>
+          <a href="/landlords">Landlords</a>
+          <a href="/new-homes">New Homes</a>
+          <a href="/about">About</a>
+          <a href="/news">News</a>
+          <a href="/contact">Contact</a>
+        </div>
+
+        <div className="mt-6 space-y-3 text-sm">
+          <a
+            href="tel:01268000000"
+            className="flex items-center gap-3 font-black text-white"
+          >
+            <AboutPhoneIcon className="h-4 w-4 text-[#BFD3CD]" />
+            01268 000 000
+          </a>
+
+          <a
+            href="mailto:hello@wrenfordashby.co.uk"
+            className="flex items-center gap-3 text-white/60"
+          >
+            <AboutMailIcon className="h-4 w-4 text-[#BFD3CD]" />
+            hello@wrenfordashby.co.uk
+          </a>
+        </div>
+
+        <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/12 pt-5 text-xs font-bold text-white/42">
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms & conditions</a>
+
+          <button
+            type="button"
+            onClick={onOpenCookiePreferences}
+            className="inline-flex items-center gap-1.5 text-left"
+          >
+            <AboutCookieIcon className="h-3.5 w-3.5" />
+            Cookie settings
+          </button>
+
+          <span>© 2026 Wrenford Ashby</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+
 function CountUp({
   value,
   active,
@@ -132,6 +738,28 @@ function CountUp({
 export default function AboutPage() {
   const [profilesVisible, setProfilesVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cookieNoticeOpen, setCookieNoticeOpen] = useState(true);
+
+  useEffect(() => {
+    const savedPreference = window.localStorage.getItem(
+      "wrenford-ashby-cookie-preference",
+    );
+
+    if (savedPreference) {
+      setCookieNoticeOpen(false);
+    }
+  }, []);
+
+  const saveCookiePreference = (preference: "all" | "essential") => {
+    window.localStorage.setItem(
+      "wrenford-ashby-cookie-preference",
+      preference,
+    );
+
+    document.cookie = `wa_cookie_preference=${preference}; path=/; max-age=31536000; SameSite=Lax`;
+    setCookieNoticeOpen(false);
+  };
 
   useEffect(() => {
     const profiles = document.getElementById("team-profiles");
@@ -185,9 +813,24 @@ export default function AboutPage() {
 
   return (
     <main className="min-h-screen overflow-x-clip bg-[#F4F6F4] font-sans text-[#17383C] antialiased selection:bg-[#BFD3CD] selection:text-[#17383C]">
-      <div className="sticky top-0 z-[100] w-full bg-white">
-        <SiteHeader />
-      </div>
+      <AboutMobileHeader
+        menuOpen={mobileMenuOpen}
+        onOpen={() => setMobileMenuOpen(true)}
+      />
+      <AboutMobileDrawer
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
+
+      <AboutMobilePage />
+      <AboutMobileFooter
+        onOpenCookiePreferences={() => setCookieNoticeOpen(true)}
+      />
+
+      <div className="hidden sm:block">
+        <div className="sticky top-0 z-[100] w-full bg-white">
+          <SiteHeader />
+        </div>
 
       <section
         id="our-team"
@@ -407,9 +1050,118 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <SiteFooter />
+        <SiteFooter />
+      </div>
+
+      {cookieNoticeOpen && (
+        <aside className="fixed bottom-4 left-4 right-4 z-[1050] border border-[#17383C]/14 bg-white p-4 shadow-[0_20px_60px_rgba(13,37,41,0.24)] sm:hidden">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-[#6B908D]">
+                Cookie preferences
+              </p>
+
+              <p className="mt-2 text-sm leading-6 text-[#17383C]/62">
+                Essential cookies keep the site working. Optional cookies help
+                us understand how it is used.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setCookieNoticeOpen(false)}
+              aria-label="Close cookie notice"
+              className="text-2xl leading-none text-[#17383C]/48"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => saveCookiePreference("all")}
+              className="min-h-11 bg-[#17383C] px-3 text-sm font-black text-white"
+            >
+              Accept all
+            </button>
+
+            <button
+              type="button"
+              onClick={() => saveCookiePreference("essential")}
+              className="min-h-11 border border-[#17383C]/24 px-3 text-sm font-black text-[#17383C]"
+            >
+              Essential only
+            </button>
+          </div>
+        </aside>
+      )}
 
       <style>{`
+        @keyframes aboutMobileDrawerIn {
+          from {
+            transform: translate3d(100%, 0, 0);
+          }
+          to {
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .about-mobile-drawer-in {
+          animation: aboutMobileDrawerIn 300ms cubic-bezier(.22,1,.36,1) both;
+        }
+
+        @keyframes aboutMobileEnter {
+          from {
+            opacity: 0;
+            transform: translate3d(0, 28px, 0);
+          }
+          to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        @keyframes aboutMobileImageIn {
+          from {
+            opacity: 0;
+            transform: scale(1.045);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .about-mobile-first-in,
+        .about-mobile-second-in,
+        .about-mobile-third-in,
+        .about-mobile-fourth-in {
+          opacity: 0;
+          animation: aboutMobileEnter 880ms cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .about-mobile-first-in {
+          animation-delay: 70ms;
+        }
+
+        .about-mobile-second-in {
+          animation-delay: 150ms;
+        }
+
+        .about-mobile-third-in {
+          animation-delay: 250ms;
+        }
+
+        .about-mobile-fourth-in {
+          animation-delay: 350ms;
+        }
+
+        .about-mobile-image-in {
+          opacity: 0;
+          animation: aboutMobileImageIn 1100ms cubic-bezier(.16,1,.3,1) 430ms both;
+        }
+
         @keyframes aboutRise {
           from {
             opacity: 0;
@@ -519,6 +1271,11 @@ export default function AboutPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
+          .about-mobile-first-in,
+          .about-mobile-second-in,
+          .about-mobile-third-in,
+          .about-mobile-fourth-in,
+          .about-mobile-image-in,
           .about-enter,
           .about-hero-copy,
           .about-hero-image,
