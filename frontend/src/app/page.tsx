@@ -2749,17 +2749,9 @@ function MobileHome() {
               "linear-gradient(to bottom, transparent 0%, transparent 12%, black 28%)",
           }}
         />
-        <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[#071C20]/92 via-[#071C20]/46 to-transparent" />
-
         <div className="relative z-10 flex min-h-[100svh] w-full flex-col px-4 pb-8 pt-[5.35rem]">
           <div className="flex flex-1 flex-col justify-center pt-3">
-            <p
-              className="wa-mobile-hero-in text-[11px] font-black uppercase tracking-[0.18em] text-[#C9DDD7]"
-              style={{
-                textShadow:
-                  "0 2px 3px rgba(0,0,0,0.95), 0 5px 16px rgba(0,0,0,0.9)",
-              }}
-            >
+            <p className="wa-mobile-hero-in text-[11px] font-black uppercase tracking-[0.18em] text-[#C9DDD7]">
               Estate agents for Wickford & South Essex
             </p>
 
@@ -2771,7 +2763,7 @@ function MobileHome() {
               24 years.
             </h1>
 
-            <div className="wa-mobile-hero-in mt-8 grid grid-cols-2 gap-4 [animation-delay:210ms]">
+            <div className="wa-mobile-hero-in mt-12 grid grid-cols-2 gap-4 [animation-delay:210ms]">
               <a
                 href="#valuation"
                 className="flex min-h-[3.75rem] items-center justify-between bg-[#6B908D] px-4 text-sm font-black text-white"
@@ -2790,8 +2782,8 @@ function MobileHome() {
             </div>
           </div>
 
-          <div className="wa-mobile-hero-in mt-7 w-full space-y-3.5 [animation-delay:320ms]">
-            <div className="flex w-full items-center gap-3 border-b border-white/14 pb-3.5">
+          <div className="wa-mobile-hero-in mt-4 w-full space-y-3.5 [animation-delay:320ms]">
+            <div className="flex w-full items-center gap-3">
               <span className="shrink-0 text-[1.15rem] font-black leading-none text-white">
                 4.8
               </span>
@@ -2860,7 +2852,7 @@ function MobileHome() {
       </section>
 
       <section className="relative z-20 -mt-px bg-[#17383C] px-4 pb-3 pt-0">
-        <MobileReveal>
+        <MobileReveal variant="search">
           <div className="relative -top-[10rem] -mb-[10rem] mx-auto max-w-[34rem] border border-white/12 bg-white shadow-[0_24px_60px_rgba(4,19,22,0.28)]">
             <div className="border-b border-[#17383C]/10 bg-[#F4F7F5] px-4 pb-4 pt-5">
               <h2 className="text-[1.65rem] font-black leading-none tracking-[-0.045em] text-[#17383C]">
@@ -3423,9 +3415,16 @@ function MobileField({
   );
 }
 
-function MobileReveal({ children }: { children: ReactNode }) {
+function MobileReveal({
+  children,
+  variant = "default",
+}: {
+  children: ReactNode;
+  variant?: "default" | "search";
+}) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
+  const isSearchReveal = variant === "search";
 
   useEffect(() => {
     const element = ref.current;
@@ -3443,22 +3442,29 @@ function MobileReveal({ children }: { children: ReactNode }) {
         observer.disconnect();
       },
       {
-        threshold: 0.12,
-        rootMargin: "0px 0px -7% 0px",
+        threshold: isSearchReveal ? 0.16 : 0.12,
+        rootMargin: isSearchReveal
+          ? "0px 0px -4% 0px"
+          : "0px 0px -7% 0px",
       },
     );
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, []);
+  }, [isSearchReveal]);
+
+  const motionClass = isSearchReveal
+    ? `will-change-[transform,opacity,filter] transition-[transform,opacity,filter] duration-[1500ms] ease-[cubic-bezier(.16,1,.3,1)] ${
+        visible
+          ? "translate-y-0 scale-100 opacity-100 blur-0"
+          : "translate-y-16 scale-[0.965] opacity-0 blur-[6px]"
+      }`
+    : `transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)] ${
+        visible ? "translate-y-0 opacity-100" : "translate-y-7 opacity-0"
+      }`;
 
   return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)] ${
-        visible ? "translate-y-0 opacity-100" : "translate-y-7 opacity-0"
-      }`}
-    >
+    <div ref={ref} className={motionClass}>
       {children}
     </div>
   );
