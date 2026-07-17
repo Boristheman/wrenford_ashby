@@ -20,6 +20,22 @@ import {
 
 type ViewMode = "grid" | "list";
 
+const DATE_INPUT_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+function toLocalDateInputValue(date: Date) {
+  const localDate = new Date(
+    date.getTime() - date.getTimezoneOffset() * 60_000,
+  );
+  return localDate.toISOString().slice(0, 10);
+}
+
+function getRelativeDateInputValue(daysFromToday: number) {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + daysFromToday);
+  return toLocalDateInputValue(date);
+}
+
 
 type LocationSuggestion = {
   id: string;
@@ -890,6 +906,8 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
   const [minBeds, setMinBeds] = useState("0");
   const [propertyType, setPropertyType] = useState("all");
   const [sort, setSort] = useState("recommended");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [view, setView] = useState<ViewMode>("grid");
   const [focusedSupport, setFocusedSupport] = useState<
     "alerts" | "viewing" | null
@@ -1000,6 +1018,9 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
       params.get("beds") ?? params.get("bedrooms") ?? "0";
     const requestedPropertyType = params.get("propertyType") ?? "all";
     const requestedSort = params.get("sort");
+    const requestedDateFrom =
+      params.get("from") ?? params.get("dateFrom") ?? "";
+    const requestedDateTo = params.get("to") ?? params.get("dateTo") ?? "";
     const requestedFocus = params.get("focus");
 
     setLocation(requestedLocation);
@@ -1016,6 +1037,26 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
       requestedSort === "recommended"
     ) {
       setSort(requestedSort);
+    }
+
+    if (requestedSort === "new") {
+      setDateFrom(
+        DATE_INPUT_PATTERN.test(requestedDateFrom)
+          ? requestedDateFrom
+          : getRelativeDateInputValue(-7),
+      );
+      setDateTo(
+        DATE_INPUT_PATTERN.test(requestedDateTo)
+          ? requestedDateTo
+          : getRelativeDateInputValue(0),
+      );
+    } else {
+      setDateFrom(
+        DATE_INPUT_PATTERN.test(requestedDateFrom) ? requestedDateFrom : "",
+      );
+      setDateTo(
+        DATE_INPUT_PATTERN.test(requestedDateTo) ? requestedDateTo : "",
+      );
     }
 
     if (requestedFocus === "alerts" || requestedFocus === "viewing") {
@@ -1055,11 +1096,18 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
         property.propertyType.toLowerCase().includes(requestedType) ||
         requestedType.includes(property.propertyType.toLowerCase());
 
+      const listedDate = property.listedDate.slice(0, 10);
+      const dateMatches =
+        sort !== "new" ||
+        ((!dateFrom || listedDate >= dateFrom) &&
+          (!dateTo || listedDate <= dateTo));
+
       return (
         (!min || property.price >= min) &&
         (!max || property.price <= max) &&
         (!beds || property.bedrooms >= beds) &&
-        typeMatches
+        typeMatches &&
+        dateMatches
       );
     });
 
@@ -1096,6 +1144,8 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
       showingNearby: useNearbyResults,
     };
   }, [
+    dateFrom,
+    dateTo,
     location,
     maxPrice,
     minBeds,
@@ -1121,6 +1171,8 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
   useEffect(() => {
     setCurrentPage(1);
   }, [
+    dateFrom,
+    dateTo,
     location,
     maxPrice,
     minBeds,
@@ -1203,9 +1255,23 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
     maxPrice !== "0",
     minBeds !== "0",
     propertyType !== "all",
+    sort === "new" && (dateFrom !== "" || dateTo !== ""),
   ].filter(Boolean).length;
 
   const shortLocation = location.split(",")[0]?.trim() || location.trim();
+
+  const changeSort = (nextSort: string) => {
+    setSort(nextSort);
+
+    if (nextSort === "new") {
+      if (!dateFrom) setDateFrom(getRelativeDateInputValue(-7));
+      if (!dateTo) setDateTo(getRelativeDateInputValue(0));
+      return;
+    }
+
+    setDateFrom("");
+    setDateTo("");
+  };
 
   const resetFilters = () => {
     setLocation("");
@@ -1214,6 +1280,8 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
     setMinBeds("0");
     setPropertyType("all");
     setSort("recommended");
+    setDateFrom("");
+    setDateTo("");
     setMobileFiltersOpen(false);
     setCurrentPage(1);
 
@@ -1530,20 +1598,52 @@ export default function PropertyListingsPage({ mode }: { mode: ListingMode }) {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:justify-end sm:gap-3">
+              {sort === "new" && (
+                <>
+                  <label className="flex h-11 min-w-[10.5rem] flex-1 items-center border border-[#17383C]/12 bg-white sm:flex-none">
+                    <span className="flex h-full items-center border-r border-[#17383C]/10 px-3 text-[9px] font-black uppercase tracking-[0.12em] text-[#6B908D]">
+                      From
+                    </span>
+                    <input
+                      type="date"
+                      value={dateFrom}
+                      max={dateTo || undefined}
+                      onChange={(event) => setDateFrom(event.target.value)}
+                      aria-label="Listed from date"
+                      className="h-full min-w-0 flex-1 bg-transparent px-3 text-xs font-bold text-[#17383C] outline-none"
+                    />
+                  </label>
+
+                  <label className="flex h-11 min-w-[10.5rem] flex-1 items-center border border-[#17383C]/12 bg-white sm:flex-none">
+                    <span className="flex h-full items-center border-r border-[#17383C]/10 px-3 text-[9px] font-black uppercase tracking-[0.12em] text-[#6B908D]">
+                      To
+                    </span>
+                    <input
+                      type="date"
+                      value={dateTo}
+                      min={dateFrom || undefined}
+                      onChange={(event) => setDateTo(event.target.value)}
+                      aria-label="Listed to date"
+                      className="h-full min-w-0 flex-1 bg-transparent px-3 text-xs font-bold text-[#17383C] outline-none"
+                    />
+                  </label>
+                </>
+              )}
+
               <select
                 value={sort}
-                onChange={(event) => setSort(event.target.value)}
-                className="h-11 border border-[#17383C]/12 bg-white px-4 text-sm font-bold text-[#17383C] outline-none"
+                onChange={(event) => changeSort(event.target.value)}
+                className="h-11 min-w-[9.5rem] flex-1 border border-[#17383C]/12 bg-white px-4 text-sm font-bold text-[#17383C] outline-none sm:flex-none"
               >
                 <option value="recommended">Recommended</option>
-                <option value="new">Newest first</option>
+                <option value="new">Newest</option>
                 <option value="price-low">Price low to high</option>
                 <option value="price-high">Price high to low</option>
                 <option value="beds-high">Most bedrooms</option>
               </select>
 
-              <div className="flex border border-[#17383C]/12 bg-white">
+              <div className="flex h-11 border border-[#17383C]/12 bg-white">
                 <button
                   type="button"
                   onClick={() => setView("grid")}

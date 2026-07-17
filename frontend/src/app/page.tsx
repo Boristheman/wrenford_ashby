@@ -2726,7 +2726,7 @@ function MobileHome() {
 
   return (
     <main id="mobile-top" className="overflow-x-hidden">
-      <section className="relative min-h-[100svh] overflow-hidden bg-[#071C20] text-white">
+      <section className="relative h-[calc(100lvh+8rem)] min-h-[calc(100lvh+8rem)] overflow-hidden bg-[#071C20] text-white">
         <video
           autoPlay
           muted
@@ -2751,16 +2751,19 @@ function MobileHome() {
         />
         <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[#071C20]/92 via-[#071C20]/46 to-transparent" />
 
-        <div className="relative z-10 flex min-h-[100svh] w-full flex-col px-4 pb-6 pt-[5.65rem]">
-          <div className="flex flex-1 flex-col justify-end">
+        <div className="relative z-10 flex min-h-[100svh] w-full flex-col px-4 pb-8 pt-[5.35rem]">
+          <div className="flex flex-1 flex-col justify-center pt-3">
             <p
               className="wa-mobile-hero-in text-[11px] font-black uppercase tracking-[0.18em] text-[#C9DDD7]"
-              style={{ textShadow: "0 2px 10px rgba(0,0,0,0.65)" }}
+              style={{
+                textShadow:
+                  "0 2px 3px rgba(0,0,0,0.95), 0 5px 16px rgba(0,0,0,0.9)",
+              }}
             >
               Estate agents for Wickford & South Essex
             </p>
 
-            <h1 className="wa-mobile-hero-in mt-3 mb-8 w-full max-w-none text-[clamp(4.5rem,22vw,7.75rem)] font-black leading-[0.86] tracking-[-0.075em] [animation-delay:100ms]">
+            <h1 className="wa-mobile-hero-in mt-3 w-full max-w-none text-[clamp(4.5rem,22vw,7.75rem)] font-black leading-[0.86] tracking-[-0.075em] [animation-delay:100ms]">
               Helping Essex
               <br />
               move for
@@ -2768,7 +2771,7 @@ function MobileHome() {
               24 years.
             </h1>
 
-            <div className="wa-mobile-hero-in mt-5 grid grid-cols-2 gap-4 [animation-delay:210ms]">
+            <div className="wa-mobile-hero-in mt-8 grid grid-cols-2 gap-4 [animation-delay:210ms]">
               <a
                 href="#valuation"
                 className="flex min-h-[3.75rem] items-center justify-between bg-[#6B908D] px-4 text-sm font-black text-white"
@@ -2787,72 +2790,78 @@ function MobileHome() {
             </div>
           </div>
 
-          <div className="wa-mobile-hero-in mt-5 w-full [animation-delay:320ms]">
-            <div className="flex min-h-10 flex-wrap items-center gap-x-3 gap-y-2">
-              <span className="text-base font-black text-white">4.8</span>
+          <div className="wa-mobile-hero-in mt-7 w-full space-y-3.5 [animation-delay:320ms]">
+            <div className="flex w-full items-center gap-3 border-b border-white/14 pb-3.5">
+              <span className="shrink-0 text-[1.15rem] font-black leading-none text-white">
+                4.8
+              </span>
 
               <div
-                className="flex items-center gap-1"
+                className="flex shrink-0 items-center gap-[3px]"
                 aria-label="Trustpilot rating 4.8 out of 5"
               >
                 {[0, 1, 2, 3, 4].map((star) => (
                   <span
                     key={star}
-                    className="flex h-5 w-5 items-center justify-center bg-[#00B67A] text-[11px] font-black text-white"
+                    className="flex h-5 w-5 items-center justify-center bg-[#00B67A] text-[11px] font-black leading-none text-white"
                   >
                     ★
                   </span>
                 ))}
               </div>
 
-              <span className="inline-flex items-center gap-1 text-sm font-black text-white">
-                <span className="text-lg leading-none text-[#00B67A]">★</span>
-                Trustpilot
-              </span>
-
-              <span className="text-xs font-semibold text-white/68">
-                from 238 reviews
-              </span>
+              <div className="ml-auto min-w-0 text-right">
+                <span className="inline-flex items-center justify-end gap-1.5 text-sm font-black leading-none text-white">
+                  <span className="text-xl leading-none text-[#00B67A]">★</span>
+                  Trustpilot
+                </span>
+                <span className="mt-1 block text-[11px] font-semibold leading-none text-white/72">
+                  from 238 reviews
+                </span>
+              </div>
             </div>
 
-            <div className="mt-2 flex min-h-10 flex-wrap items-center gap-x-3 gap-y-2">
-              <span className="text-base font-black text-white">4.9</span>
+            <div className="flex w-full items-center gap-3">
+              <span className="shrink-0 text-[1.15rem] font-black leading-none text-white">
+                4.9
+              </span>
 
               <div
-                className="flex items-center gap-0.5"
+                className="flex shrink-0 items-center gap-[2px]"
                 aria-label="Google rating 4.9 out of 5"
               >
                 {[0, 1, 2, 3, 4].map((star) => (
                   <span
                     key={star}
-                    className="text-lg leading-none text-[#FBBC04]"
+                    className="text-[1.35rem] leading-none text-[#FBBC04]"
                   >
                     ★
                   </span>
                 ))}
               </div>
 
-              <span className="inline-flex items-center gap-1 text-sm font-black text-white">
-                <img
-                  src="/graphics/logos/google.png"
-                  alt=""
-                  draggable={false}
-                  className="h-[1.15rem] w-[1.15rem] shrink-0 object-contain"
-                />
-                Google
-              </span>
-
-              <span className="text-xs font-semibold text-white/68">
-                from 284 reviews
-              </span>
+              <div className="ml-auto min-w-0 text-right">
+                <span className="inline-flex items-center justify-end gap-1.5 text-sm font-black leading-none text-white">
+                  <img
+                    src="/graphics/logos/google.png"
+                    alt=""
+                    draggable={false}
+                    className="h-5 w-5 shrink-0 object-contain"
+                  />
+                  Google
+                </span>
+                <span className="mt-1 block text-[11px] font-semibold leading-none text-white/72">
+                  from 284 reviews
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="relative z-20 -mt-px bg-[#17383C] px-4 py-8">
+      <section className="relative z-20 -mt-px bg-[#17383C] px-4 pb-3 pt-0">
         <MobileReveal>
-          <div className="mx-auto max-w-[34rem] border border-white/12 bg-white shadow-[0_24px_60px_rgba(4,19,22,0.28)]">
+          <div className="relative -top-[10rem] -mb-[10rem] mx-auto max-w-[34rem] border border-white/12 bg-white shadow-[0_24px_60px_rgba(4,19,22,0.28)]">
             <div className="border-b border-[#17383C]/10 bg-[#F4F7F5] px-4 pb-4 pt-5">
               <h2 className="text-[1.65rem] font-black leading-none tracking-[-0.045em] text-[#17383C]">
                 Find your next home.
